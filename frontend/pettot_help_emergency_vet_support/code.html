@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "surface": "#fff8f6", "outline": "#727970", "surface-container": "#f3eceb", "on-primary-container": "#afe2b3", "tertiary-fixed-dim": "#f0bd8b", "on-primary-fixed-variant": "#22502d", "surface-container-lowest": "#ffffff", "tertiary-container": "#7b542b", "on-error": "#ffffff", "on-primary-fixed": "#00210a", "inverse-on-surface": "#f6efee", "on-primary": "#ffffff", "outline-variant": "#c1c9be", "primary-container": "#386641", "surface-bright": "#fff8f6", "secondary-fixed-dim": "#aad0ad", "tertiary": "#603d16", "background": "#fff8f6", "error-container": "#ffdad6", "secondary-container": "#c3e9c5", "primary": "#204e2b", "on-secondary-fixed": "#00210b", "on-surface-variant": "#414941", "inverse-surface": "#32302f", "on-background": "#1d1b1a", "surface-dim": "#dfd9d7", "surface-container-low": "#f9f2f1", "surface-variant": "#e7e1e0", "on-tertiary-fixed-variant": "#623f18", "secondary-fixed": "#c6ecc8", "surface-container-highest": "#e7e1e0", "on-error-container": "#93000a", "surface-container-high": "#ede7e5", "on-secondary-fixed-variant": "#2d4e33", "on-surface": "#1d1b1a", "primary-fixed": "#bcefc0", "error": "#ba1a1a", "secondary": "#44664a", "on-tertiary": "#ffffff", "on-secondary-container": "#486a4e", "primary-fixed-dim": "#a0d3a5", "on-tertiary-fixed": "#2c1600", "on-tertiary-container": "#ffcb9a", "surface-tint": "#3a6843", "inverse-primary": "#a0d3a5", "on-secondary": "#ffffff", "tertiary-fixed": "#ffdcbd" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "margin-lg": "3rem", "gutter": "1rem", "gutter-md": "1.5rem", "space-xl": "2.5rem", "margin-md": "1.5rem", "space-lg": "1.5rem", "gutter-lg": "2rem", "space-xs": "0.25rem", "space-md": "1rem", "margin": "1rem", "space-sm": "0.5rem" }, "fontFamily": { "label-lg": ["Plus Jakarta Sans"], "body-md": ["Nunito Sans"], "body-lg": ["Nunito Sans"], "headline-sm": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "body-sm": ["Nunito Sans"], "headline-lg-mobile": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "display-mobile": ["Plus Jakarta Sans"], "headline-lg": ["Plus Jakarta Sans"], "display": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"] }, "fontSize": { "label-lg": ["15px", { "lineHeight": "20px", "fontWeight": "600" }], "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }], "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }], "label-md": ["13px", { "lineHeight": "18px", "fontWeight": "600" }], "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "0em", "fontWeight": "700" }], "label-sm": ["11px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "display-mobile": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "display": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-md": ["22px", { "lineHeight": "28px", "fontWeight": "600" }] } } } };</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased min-h-screen"><header class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-20 max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between gap-gutter-md"><div class="flex items-center gap-6"><a class="flex items-center gap-space-sm cursor-pointer select-none" data-path="recovery-overview" href="#"><div class="w-9 h-9 rounded-full bg-secondary-container flex items-center justify-center text-primary"><span class="material-symbols-outlined text-[20px]">pets</span></div><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-primary tracking-tight">PetTot</span><span class="font-label-sm text-label-sm text-on-surface-variant -mt-1">Gentle Recovery</span></div></a><a class="hidden lg:flex items-center bg-surface-container-low px-3 py-1.5 rounded-full gap-space-sm hover:bg-surface-container transition-colors" data-path="login-and-patient-switcher" href="#"><div class="w-2.5 h-2.5 rounded-full bg-primary-container animate-pulse"></div><div class="flex items-baseline gap-1.5"><span class="font-label-md text-label-md text-on-surface font-semibold">Milo</span><span class="font-body-sm text-body-sm text-on-surface-variant">Golden Retriever</span><span class="text-outline-variant font-body-sm text-body-sm">•</span><span class="font-label-md text-label-md text-primary font-semibold">Day 5 of Recovery</span></div><span class="material-symbols-outlined text-on-surface-variant text-[18px]">unfold_more</span></a></div><nav class="hidden md:flex items-center gap-2 bg-surface-container-low/70 p-1.5 rounded-full" data-active-classes="bg-secondary-container text-on-secondary-container rounded-full"><a class="px-4 py-2 font-label-md text-label-md text-on-surface-variant hover:text-on-surface rounded-full transition-colors" data-path="recovery-overview" href="#">Recovery Overview</a><a class="px-4 py-2 font-label-md text-label-md text-on-surface-variant hover:text-on-surface rounded-full transition-colors" data-path="daily-check-in" href="#">Daily Check-in</a><a class="px-4 py-2 font-label-md text-label-md text-on-surface-variant hover:text-on-surface rounded-full transition-colors" data-path="care-team-and-connect-doctor" href="#">Care Team &amp; Connect</a><a aria-current="page" class="px-4 py-2 font-label-md transition-colors bg-secondary-container text-on-secondary-container rounded-full" data-path="help-and-emergency" href="#">Help &amp; Emergency</a></nav><div class="flex items-center gap-3"><a class="hidden sm:inline-flex items-center gap-space-xs px-4 py-2 rounded-full bg-error-container text-on-error-container hover:bg-error hover:text-on-error transition-colors font-label-md text-label-md" data-path="help-and-emergency" href="#"><span class="material-symbols-outlined text-[18px]">e911_emergency</span><span>Emergency Vet</span></a><a class="w-9 h-9 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface-variant hover:text-primary flex items-center justify-center transition-colors" data-path="login-and-patient-switcher" href="#" title="Switch Pet or Account"><span class="material-symbols-outlined text-[20px]">account_circle</span></a></div></div></header><main class="w-full pt-20 bg-surface"><div class="flex flex-col w-full">
+<!-- Critical Action Hub & Priority Alert Banner -->
+<section class="w-full px-6 lg:px-12 py-8 bg-surface">
+<div class="max-w-7xl mx-auto flex flex-col gap-6">
+<!-- Top Priority Reassurance & Immediate Dispatch Banner -->
+<div class="relative overflow-hidden rounded-xl bg-error-container p-6 lg:p-8 shadow-sm">
+<div class="absolute -right-8 -top-8 w-64 h-64 rounded-full bg-error/10 blur-2xl pointer-events-none"></div>
+<div class="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+<div class="flex items-start gap-4">
+<div class="w-12 h-12 rounded-full bg-error text-on-error flex items-center justify-center shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">emergency</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="px-2.5 py-0.5 rounded-full bg-error text-on-error font-label-sm text-label-sm uppercase tracking-wider">Priority Triage</span>
+<span class="font-label-md text-label-md text-on-error-container font-semibold">Trained Vet Technicians Ready 24/7</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-error-container mt-1">Need Immediate Help?</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl mt-1">
+                If Milo shows acute respiratory distress, severe bleeding, or collapse, do not wait. Call our priority dispatch or head directly to the nearest regional trauma center.
+              </p>
+</div>
+</div>
+<!-- Dual Critical Phone Triggers -->
+<div class="flex flex-col sm:flex-row lg:flex-col xl:flex-row items-stretch gap-3 shrink-0">
+<a class="inline-flex items-center justify-center gap-3 px-6 py-4 rounded-full bg-error text-on-error hover:bg-on-error-container transition-all shadow-md active:scale-[0.98]" href="tel:8005557387">
+<span class="material-symbols-outlined text-[22px]">phone_in_talk</span>
+<div class="flex flex-col text-left">
+<span class="font-label-sm text-label-sm uppercase tracking-wider opacity-90">Toll-Free Hotline</span>
+<span class="font-label-lg text-label-lg font-bold">(800) 555-PETS</span>
+</div>
+</a>
+<a class="inline-flex items-center justify-center gap-3 px-6 py-4 rounded-full bg-surface text-on-surface hover:bg-surface-container-high transition-all shadow-sm active:scale-[0.98]" href="tel:5552347387">
+<span class="material-symbols-outlined text-error text-[22px]" style="font-variation-settings: 'FILL' 1;">near_me</span>
+<div class="flex flex-col text-left">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Bay Emergency (12 min away)</span>
+<span class="font-label-lg text-label-lg font-bold text-primary">(555) 234-PETS</span>
+</div>
+</a>
+</div>
+</div>
+</div>
+<!-- Quick Triage Routing Strips -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Action 1: On-Call Nurse -->
+<a class="flex items-center justify-between p-5 rounded-xl bg-surface-container-lowest hover:bg-surface-container-low transition-all shadow-sm group" href="tel:5552347388">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-secondary-container text-primary flex items-center justify-center group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[20px]">support_agent</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-on-surface">Call On-Call Vet Nurse</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Avg response: under 3 mins</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">arrow_forward</span>
+</a>
+<!-- Action 2: Urgent Photo Triage -->
+<button class="flex items-center justify-between p-5 rounded-xl bg-surface-container-lowest hover:bg-surface-container-low transition-all shadow-sm group text-left" onclick="document.getElementById('photo-modal').classList.remove('hidden')">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-tertiary-fixed text-tertiary flex items-center justify-center group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[20px]">add_a_photo</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-on-surface">Send Urgent Incision Photo</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Flagged for doctor review</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">arrow_forward</span>
+</button>
+<!-- Action 3: Directions -->
+<a class="flex items-center justify-between p-5 rounded-xl bg-surface-container-lowest hover:bg-surface-container-low transition-all shadow-sm group" href="#emergency-location">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-primary-fixed text-primary flex items-center justify-center group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[20px]">directions_car</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-on-surface">Directions to ER Clinic</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">1420 Mission Blvd (Open 24h)</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">arrow_forward</span>
+</a>
+</div>
+</div>
+</section>
+<!-- Interactive Triage Guide: Normal vs Watch vs Immediate -->
+<section class="w-full px-6 lg:px-12 py-10 bg-surface">
+<div class="max-w-7xl mx-auto flex flex-col gap-8">
+<!-- Section Title & Reassuring Intro -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<div class="flex items-center gap-2 text-primary font-label-md text-label-md mb-1">
+<span class="material-symbols-outlined text-[18px]">verified_user</span>
+<span>Interactive Decision Helper</span>
+</div>
+<h2 class="font-display text-display text-on-surface">Is This Normal or an Emergency?</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-2 max-w-2xl">
+            Surgical recovery has natural waves of mild discomfort, fluid shifts, and medication drowsiness. Compare your pet's current state with the triaged indicators below.
+          </p>
+</div>
+<!-- Filter / Quick-Toggles -->
+<div class="inline-flex p-1 rounded-full bg-surface-container self-start md:self-end">
+<button class="px-4 py-1.5 rounded-full font-label-md text-label-md bg-surface-container-lowest text-on-surface shadow-sm transition-all" id="tab-all" onclick="filterSigns('all')">All Signs</button>
+<button class="px-4 py-1.5 rounded-full font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-all" id="tab-green" onclick="filterSigns('green')">Normal</button>
+<button class="px-4 py-1.5 rounded-full font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-all" id="tab-amber" onclick="filterSigns('amber')">Monitor</button>
+<button class="px-4 py-1.5 rounded-full font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-all" id="tab-red" onclick="filterSigns('red')">Immediate</button>
+</div>
+</div>
+<!-- Triage Matrix: 3 Visual Pillars -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+<!-- Column 1: GREEN / EXPECTED -->
+<div class="triage-card flex flex-col rounded-xl bg-surface-container-lowest p-6 shadow-sm" id="col-green">
+<div class="flex items-center justify-between pb-4">
+<div class="flex items-center gap-2.5">
+<span class="w-3.5 h-3.5 rounded-full bg-primary flex items-center justify-center">
+<span class="w-1.5 h-1.5 rounded-full bg-on-primary"></span>
+</span>
+<span class="font-headline-sm text-headline-sm text-primary">Normal &amp; Expected</span>
+</div>
+<span class="px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm">Safe to rest</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-6">
+            Typical post-operative biological healing. Requires peaceful resting space, hydration access, and continued routine medication.
+          </p>
+<div class="flex flex-col gap-4 flex-grow">
+<!-- Item 1 -->
+<div class="p-4 rounded-xl bg-surface-container-low flex flex-col gap-1.5">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]">check_circle</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Mild pinkness around incision</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                Light pink edges without widespread swelling or heat radiating from the suture line are a standard inflammatory response.
+              </p>
+</div>
+<!-- Item 2 -->
+<div class="p-4 rounded-xl bg-surface-container-low flex flex-col gap-1.5">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]">bedtime</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Prolonged sleep / Lethargy</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                Gabapentin and mild analgesics induce deep, heavy naps. As long as Milo wakes up willingly for water or snacks, this is healthy.
+              </p>
+</div>
+<!-- Item 3 -->
+<div class="p-4 rounded-xl bg-surface-container-low flex flex-col gap-1.5">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]">hiking</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Guarding leg during short walks</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                Pet favors or hovers the leg slightly while relieving themselves. Gentle joint stiffness improves after short resting intervals.
+              </p>
+</div>
+</div>
+<div class="mt-6 pt-4 flex items-center gap-2 text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px] text-primary">done_all</span>
+<span>Continue standard daily log at 8:00 PM</span>
+</div>
+</div>
+<!-- Column 2: AMBER / WATCH & NOTE -->
+<div class="triage-card flex flex-col rounded-xl bg-surface-container-lowest p-6 shadow-sm" id="col-amber">
+<div class="flex items-center justify-between pb-4">
+<div class="flex items-center gap-2.5">
+<span class="w-3.5 h-3.5 rounded-full bg-tertiary-container flex items-center justify-center">
+<span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span>
+</span>
+<span class="font-headline-sm text-headline-sm text-tertiary">Watch &amp; Note Signs</span>
+</div>
+<span class="px-2.5 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant font-label-sm text-label-sm">Log in app</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-6">
+            Non-critical variations. Monitor for 2 to 4 hours. Note changes during the next scheduled check-in or request advice if persistent.
+          </p>
+<div class="flex flex-col gap-4 flex-grow">
+<!-- Item 1 -->
+<div class="p-4 rounded-xl bg-surface-container-low flex flex-col gap-1.5">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary text-[18px]">no_meals</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Skipping a single scheduled meal</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                Mild nausea can occur after pills. Offer a small spoonful of plain boiled chicken or bone broth before worrying.
+              </p>
+</div>
+<!-- Item 2 -->
+<div class="p-4 rounded-xl bg-surface-container-low flex flex-col gap-1.5">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary text-[18px]">water_drop</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Minor clear fluid droplet</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                A tiny speck of odorless clear or pale serum on the fur. Dab gently with sterile gauze without rubbing the incision.
+              </p>
+</div>
+<!-- Item 3 -->
+<div class="p-4 rounded-xl bg-surface-container-low flex flex-col gap-1.5">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary text-[18px]">volume_down</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Whining only when standing up</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                Brief vocalization during posture changes indicates mild stiffness. If vocalization subsides once standing, it is not an acute emergency.
+              </p>
+</div>
+</div>
+<div class="mt-6 pt-4 flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-tertiary">edit_note</span>
+<span>Record in Daily Log</span>
+</span>
+<button class="text-primary hover:underline font-semibold" onclick="document.getElementById('photo-modal').classList.remove('hidden')">Snap quick photo →</button>
+</div>
+</div>
+<!-- Column 3: RED / IMMEDIATE ACTION -->
+<div class="triage-card flex flex-col rounded-xl bg-surface-container-lowest p-6 shadow-sm" id="col-red">
+<div class="flex items-center justify-between pb-4">
+<div class="flex items-center gap-2.5">
+<span class="w-3.5 h-3.5 rounded-full bg-error flex items-center justify-center">
+<span class="w-1.5 h-1.5 rounded-full bg-on-error"></span>
+</span>
+<span class="font-headline-sm text-headline-sm text-error">Call Clinic Immediately</span>
+</div>
+<span class="px-2.5 py-1 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm">Immediate ER</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-6">
+            Do not wait for standard clinic hours. Contact emergency triage staff directly if any of these four symptoms appear.
+          </p>
+<div class="flex flex-col gap-4 flex-grow">
+<!-- Item 1 -->
+<div class="p-4 rounded-xl bg-error-container/40 flex flex-col gap-1.5">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-error text-[18px]">crisis_alert</span>
+<span class="font-headline-sm text-headline-sm text-on-error-container">Gap or opening between stitches</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                Any visible dehiscence, exposed subcutaneous layer, or loose stitch thread requires immediate protection with clean gauze and direct transport.
+              </p>
+</div>
+<!-- Item 2 -->
+<div class="p-4 rounded-xl bg-error-container/40 flex flex-col gap-1.5">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-error text-[18px]">sick</span>
+<span class="font-headline-sm text-headline-sm text-on-error-container">Foul odor or cloudy discharge</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                Thick yellow, milky green, or smelly secretion points to acute bacterial infection requiring prompt culture and IV antibiotic adjustment.
+              </p>
+</div>
+<!-- Item 3 -->
+<div class="p-4 rounded-xl bg-error-container/40 flex flex-col gap-1.5">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-error text-[18px]">water_voc</span>
+<span class="font-headline-sm text-headline-sm text-on-error-container">Refusing water for &gt; 12 hours</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                Risk of severe post-op dehydration and kidney strain. Check gums: if pale or sticky to touch, seek ER fluid support right away.
+              </p>
+</div>
+<!-- Item 4 -->
+<div class="p-4 rounded-xl bg-error-container/40 flex flex-col gap-1.5">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-error text-[18px]">sentiment_very_dissatisfied</span>
+<span class="font-headline-sm text-headline-sm text-on-error-container">Extreme restlessness or continuous crying</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                Pacing, inability to lie flat, rapid shallow breathing, or crying without relief implies breakthrough surgical pain needing intervention.
+              </p>
+</div>
+</div>
+<div class="mt-6 pt-4">
+<a class="w-full py-3 rounded-full bg-error text-on-error hover:bg-on-error-container transition-colors flex items-center justify-center gap-2 font-label-md text-label-md shadow-sm" href="tel:8005557387">
+<span class="material-symbols-outlined text-[18px]">call</span>
+<span>Dial 24/7 ER: (800) 555-PETS</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Interactive Symptom Fast-Check Tool -->
+<section class="w-full px-6 lg:px-12 py-8 bg-surface">
+<div class="max-w-7xl mx-auto rounded-xl bg-surface-container p-6 lg:p-10 shadow-sm flex flex-col gap-6">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-primary font-bold">Quick Self-Assessor</span>
+<h3 class="font-headline-lg text-headline-lg text-on-surface mt-0.5">Not sure what category your concern fits?</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Select whatever Milo is experiencing right now for an immediate recommendation.</p>
+</div>
+<div class="shrink-0 flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-primary animate-ping"></span>
+<span class="font-label-sm text-label-sm text-primary font-bold">Real-time Clinical Logic</span>
+</div>
+</div>
+<!-- Quick Interactive Chip Selector -->
+<div class="flex flex-wrap gap-2.5" id="symptom-tag-container">
+<button class="sym-tag px-4 py-2 rounded-full bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-surface-bright transition-all shadow-sm" onclick="evaluateSymptom('gum_pale')">
+          Sticky/Pale Gum Color
+        </button>
+<button class="sym-tag px-4 py-2 rounded-full bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-surface-bright transition-all shadow-sm" onclick="evaluateSymptom('bruising')">
+          Faint Purple Bruising on Skin
+        </button>
+<button class="sym-tag px-4 py-2 rounded-full bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-surface-bright transition-all shadow-sm" onclick="evaluateSymptom('cone_frustration')">
+          Rubbing Cone / Elizabethan Collar
+        </button>
+<button class="sym-tag px-4 py-2 rounded-full bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-surface-bright transition-all shadow-sm" onclick="evaluateSymptom('vomiting')">
+          Repeated Vomiting (&gt;2 times)
+        </button>
+<button class="sym-tag px-4 py-2 rounded-full bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-surface-bright transition-all shadow-sm" onclick="evaluateSymptom('shivering')">
+          Mild Muscle Shivering After Waking
+        </button>
+<button class="sym-tag px-4 py-2 rounded-full bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-surface-bright transition-all shadow-sm" onclick="evaluateSymptom('bleeding_active')">
+          Active Blood Dripping from Wound
+        </button>
+</div>
+<!-- Dynamic Assessor Output Panel -->
+<div class="p-6 rounded-xl bg-surface-container-lowest shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4" id="assessor-result">
+<div class="flex items-start gap-4">
+<div class="w-12 h-12 rounded-full bg-secondary-container text-primary flex items-center justify-center shrink-0" id="assessor-icon-box">
+<span class="material-symbols-outlined text-[24px]" id="assessor-icon">lightbulb</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded-full bg-secondary-container text-primary font-label-sm text-label-sm" id="assessor-badge">Select an issue above</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold" id="assessor-urgency">Triage helper ready</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1" id="assessor-text">
+              Click any of the frequent post-operative recovery indicators above to preview medical urgency, home care techniques, and when to pick up the phone.
+            </p>
+</div>
+</div>
+<div class="shrink-0 hidden" id="assessor-action-wrap">
+<a class="px-6 py-2.5 rounded-full bg-primary text-on-primary font-label-md text-label-md inline-flex items-center gap-2 shadow-sm" href="tel:8005557387" id="assessor-action-btn">
+<span>Call Clinic</span>
+</a>
+</div>
+</div>
+</div>
+</section>
+<!-- Emergency Facility Location & Interactive Map Section -->
+<section class="w-full px-6 lg:px-12 py-10 bg-surface" id="emergency-location">
+<div class="max-w-7xl mx-auto flex flex-col gap-6">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-tertiary font-bold">Physical Emergency Center</span>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mt-1">Bay Animal Emergency Hospital</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Fully staffed Level-1 Veterinary Trauma &amp; Post-Op Surgery Unit with 24-hour surgical suites.</p>
+</div>
+<div class="flex items-center gap-3">
+<a class="px-5 py-2.5 rounded-full bg-surface-container text-on-surface hover:bg-surface-container-high transition-all font-label-md text-label-md inline-flex items-center gap-2" href="https://maps.google.com" rel="noopener noreferrer" target="_blank">
+<span class="material-symbols-outlined text-[18px]">open_in_new</span>
+<span>Open in Google Maps</span>
+</a>
+<a class="px-5 py-2.5 rounded-full bg-primary text-on-primary hover:bg-primary-container transition-all font-label-md text-label-md inline-flex items-center gap-2 shadow-sm" href="tel:5552347387">
+<span class="material-symbols-outlined text-[18px]">call</span>
+<span>Alert ER We Are Coming</span>
+</a>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+<!-- Visual Map Component (using data-location per pipeline) -->
+<div class="lg:col-span-8 overflow-hidden rounded-xl shadow-sm relative min-h-[340px] flex flex-col justify-end">
+<div class="absolute inset-0 w-full h-full bg-cover bg-center" data-location="Bay Animal Emergency Hospital, 1420 Mission Blvd, San Francisco, CA" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDYqJJnr3gonzJLmT9P9YKlstesotbK1C4DfrLirGI5rEEs3HrKwxMQKtkSFx_Dj2cYbSLKsXBPNAPH8FAHYRm0cr8L9tscX55SbJkvbzVOh9MrJB3m7NB3y-WivvuliUUt4zj7W_A6ztGFmjOSDEexSBcsVr7IUlBZxF6BmT92ZCX8qUFzQ5CWAR3YEWo9OMDHnP62nIl3dYprcuZ0cELOWfr76ZMiz1LLSPCZclmCs9ot71E-9dU')"></div>
+<!-- Translucent Inset Map Card -->
+<div class="relative z-10 m-4 p-5 rounded-xl bg-surface/95 backdrop-blur-md shadow-md max-w-md flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-primary font-bold">Current Traffic</span>
+<span class="px-2 py-0.5 rounded-full bg-secondary-container text-primary font-label-sm text-label-sm">12 min drive (4.2 miles)</span>
+</div>
+<div class="font-headline-sm text-headline-sm text-on-surface">1420 Mission Blvd, Suite A</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Entrance has dedicated stretcher drop-off stalls and a ramp for non-ambulatory pets.</div>
+</div>
+</div>
+<!-- Facility Logistics Details -->
+<div class="lg:col-span-4 flex flex-col justify-between p-6 rounded-xl bg-surface-container-lowest shadow-sm gap-6">
+<div class="flex flex-col gap-4">
+<span class="font-headline-sm text-headline-sm text-on-surface">Emergency Arrival Checklist</span>
+<div class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-full bg-secondary-container text-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[18px]">badge</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Pet Patient ID</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Milo #PT-8841-A (TPLO Knee Surgery)</span>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-full bg-secondary-container text-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[18px]">medication</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Current Medications</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Gabapentin 100mg, Carprofen 75mg</span>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-full bg-secondary-container text-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[18px]">airline_seat_recline_extra</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Transport Tip</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Support Milo's hindquarters with a bath towel sling under the belly.</span>
+</div>
+</div>
+</div>
+<!-- Direct Dispatch Box -->
+<div class="p-4 rounded-xl bg-surface-container-low flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Direct Trauma Desk</span>
+<span class="font-headline-sm text-headline-sm text-primary font-bold">(555) 234-7387</span>
+</div>
+<a class="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-sm hover:scale-105 transition-transform" href="tel:5552347387">
+<span class="material-symbols-outlined text-[20px]">call</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Photo Upload & Urgent Review Modal (Hidden by default) -->
+<div class="fixed inset-0 z-50 bg-inverse-surface/40 backdrop-blur-sm hidden flex items-center justify-center p-4" id="photo-modal">
+<div class="w-full max-w-xl rounded-xl bg-surface-container-lowest p-6 lg:p-8 shadow-xl flex flex-col gap-6 relative">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-tertiary-fixed text-tertiary flex items-center justify-center">
+<span class="material-symbols-outlined text-[22px]">photo_camera</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Urgent Incision Photo Triage</h3>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Transmitted instantly to doctor on floor</span>
+</div>
+</div>
+<button class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface hover:bg-surface-container-high transition-colors" onclick="document.getElementById('photo-modal').classList.add('hidden')">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+<div class="p-4 rounded-xl bg-surface-container-low flex flex-col items-center justify-center border-2 border-dashed border-outline-variant/60 py-8 gap-3 cursor-pointer hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[36px] text-tertiary">cloud_upload</span>
+<div class="text-center">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Tap to capture or upload photo</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Please ensure good lighting directly on Milo's suture line</p>
+</div>
+<span class="px-3 py-1 rounded-full bg-surface-container-lowest text-on-surface font-label-sm text-label-sm shadow-sm">Max 25MB • JPG, PNG</span>
+</div>
+<div class="flex flex-col gap-3">
+<label class="font-label-md text-label-md text-on-surface">What change did you notice?</label>
+<textarea class="w-full p-3 rounded-lg bg-surface-container-low text-on-surface font-body-sm text-body-sm focus:outline-none focus:ring-2 focus:ring-primary/40 resize-none" placeholder="e.g. Incision seems slightly puffier on the lower edge since noon walk..." rows="3"></textarea>
+</div>
+<div class="flex items-center justify-between gap-3 pt-2">
+<button class="px-5 py-2.5 rounded-full font-label-md text-label-md text-on-surface-variant hover:text-on-surface" onclick="document.getElementById('photo-modal').classList.add('hidden')">Cancel</button>
+<button class="px-6 py-2.5 rounded-full bg-primary text-on-primary font-label-md text-label-md shadow-sm hover:bg-primary-container transition-colors flex items-center gap-2" id="btn-submit-photo" onclick="simulatePhotoSubmit()">
+<span class="material-symbols-outlined text-[18px]">send</span>
+<span>Submit for Fast Vet Review</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Reassuring Guidance Footer -->
+<section class="w-full px-6 lg:px-12 py-12 bg-surface-container-low">
+<div class="max-w-4xl mx-auto flex flex-col items-center text-center gap-4">
+<div class="w-12 h-12 rounded-full bg-secondary-container text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">favorite</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface">You are doing a wonderful job caring for Milo</h3>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl leading-relaxed">
+        Post-surgery healing has ups and downs. Remember that quiet moments, gentle rest, and small milestones take time. When in doubt, our veterinary team is always happy to review a quick photo or talk through your questions. You are never on this journey alone.
+      </p>
+<div class="flex items-center gap-4 mt-2">
+<a class="font-label-md text-label-md text-primary font-semibold hover:underline flex items-center gap-1.5" href="tel:5552347388">
+<span class="material-symbols-outlined text-[18px]">chat</span>
+<span>Reach Nurse Chat Support</span>
+</a>
+<span class="text-outline-variant">•</span>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface" href="#">
+          View Post-Op Medication Chart
+        </a>
+</div>
+</div>
+</section>
+<!-- Interactive Scripts for Triage Filtering & Logic Simulator -->
+<script>
+    // Tab filtering logic for Triage Matrix
+    function filterSigns(category) {
+      const colGreen = document.getElementById('col-green');
+      const colAmber = document.getElementById('col-amber');
+      const colRed = document.getElementById('col-red');
+      
+      const tabAll = document.getElementById('tab-all');
+      const tabGreen = document.getElementById('tab-green');
+      const tabAmber = document.getElementById('tab-amber');
+      const tabRed = document.getElementById('tab-red');
+
+      const tabs = [tabAll, tabGreen, tabAmber, tabRed];
+      tabs.forEach(t => {
+        t.className = "px-4 py-1.5 rounded-full font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-all";
+      });
+
+      if (category === 'all') {
+        colGreen.classList.remove('hidden');
+        colAmber.classList.remove('hidden');
+        colRed.classList.remove('hidden');
+        tabAll.className = "px-4 py-1.5 rounded-full font-label-md text-label-md bg-surface-container-lowest text-on-surface shadow-sm transition-all";
+      } else if (category === 'green') {
+        colGreen.classList.remove('hidden');
+        colAmber.classList.add('hidden');
+        colRed.classList.add('hidden');
+        tabGreen.className = "px-4 py-1.5 rounded-full font-label-md text-label-md bg-secondary-container text-primary font-bold shadow-sm transition-all";
+      } else if (category === 'amber') {
+        colGreen.classList.add('hidden');
+        colAmber.classList.remove('hidden');
+        colRed.classList.add('hidden');
+        tabAmber.className = "px-4 py-1.5 rounded-full font-label-md text-label-md bg-tertiary-fixed text-tertiary font-bold shadow-sm transition-all";
+      } else if (category === 'red') {
+        colGreen.classList.add('hidden');
+        colAmber.classList.add('hidden');
+        colRed.classList.remove('hidden');
+        tabRed.className = "px-4 py-1.5 rounded-full font-label-md text-label-md bg-error-container text-on-error-container font-bold shadow-sm transition-all";
+      }
+    }
+
+    // Dynamic Evaluator Data Logic
+    const evaluations = {
+      gum_pale: {
+        urgency: "Red Flag / Immediate Attention",
+        badge: "Emergency Sign",
+        badgeClass: "bg-error-container text-on-error-container",
+        iconBoxClass: "bg-error text-on-error",
+        icon: "warning",
+        text: "Pale, white, or tacky/sticky gums point to low circulation, anemia, or potential internal fluid loss. Call the 24/7 ER hotline immediately.",
+        actionText: "Call ER Hotline",
+        actionHref: "tel:8005557387"
+      },
+      bruising: {
+        urgency: "Amber / Common Observation",
+        badge: "Monitor Progress",
+        badgeClass: "bg-tertiary-fixed text-on-tertiary-fixed-variant",
+        iconBoxClass: "bg-tertiary-fixed text-tertiary",
+        icon: "visibility",
+        text: "Mild gravity bruising (purplish spreading down the inner thigh) often surfaces on Days 3-6. If the area isn't bulging or painful to light touch, monitor it closely.",
+        actionText: "Send Photo to Check",
+        actionHref: "javascript:document.getElementById('photo-modal').classList.remove('hidden')"
+      },
+      cone_frustration: {
+        urgency: "Green / Expected Behavior",
+        badge: "Normal Healing Nuance",
+        badgeClass: "bg-secondary-container text-primary",
+        iconBoxClass: "bg-secondary-container text-primary",
+        icon: "pets",
+        text: "Pets often freeze or bump into doorways with E-collars. Keep the cone secured to prevent catastrophic licking. You may offer a soft lick-mat to soothe anxiety.",
+        actionText: "Log Behavior",
+        actionHref: "#"
+      },
+      vomiting: {
+        urgency: "Red Flag / Call Clinic",
+        badge: "Urgent Attention",
+        badgeClass: "bg-error-container text-on-error-container",
+        iconBoxClass: "bg-error text-on-error",
+        icon: "crisis_alert",
+        text: "Repeated vomiting expels essential pain medications and induces dehydration. Hold remaining oral meds and dial our on-call nurse right away.",
+        actionText: "Call Clinic Staff",
+        actionHref: "tel:5552347387"
+      },
+      shivering: {
+        urgency: "Amber / Reassure & Warm",
+        badge: "Post-Sedation Effect",
+        badgeClass: "bg-tertiary-fixed text-on-tertiary-fixed-variant",
+        iconBoxClass: "bg-tertiary-fixed text-tertiary",
+        icon: "ac_unit",
+        text: "Mild shivering can occur as anesthesia clears or during medication dips. Tuck Milo into a warm fleece blanket. If tremors persist over 30 mins, call us.",
+        actionText: "Talk to On-Call Nurse",
+        actionHref: "tel:5552347388"
+      },
+      bleeding_active: {
+        urgency: "Red Flag / Immediate Clinic Visit",
+        badge: "Emergency Protocol",
+        badgeClass: "bg-error text-on-error",
+        iconBoxClass: "bg-error text-on-error",
+        icon: "emergency",
+        text: "Continuous active dripping requires direct pressure with sterile pad. Do not wipe vigorously. Head straight to Bay Animal Emergency Hospital.",
+        actionText: "Get Navigation Now",
+        actionHref: "#emergency-location"
+      }
+    };
+
+    function evaluateSymptom(key) {
+      const data = evaluations[key];
+      if (!data) return;
+
+      const badge = document.getElementById('assessor-badge');
+      const urgency = document.getElementById('assessor-urgency');
+      const text = document.getElementById('assessor-text');
+      const icon = document.getElementById('assessor-icon');
+      const iconBox = document.getElementById('assessor-icon-box');
+      const actionWrap = document.getElementById('assessor-action-wrap');
+      const actionBtn = document.getElementById('assessor-action-btn');
+
+      badge.textContent = data.badge;
+      badge.className = "px-2.5 py-0.5 rounded-full font-label-sm text-label-sm font-semibold " + data.badgeClass;
+      urgency.textContent = data.urgency;
+      text.textContent = data.text;
+      icon.textContent = data.icon;
+      iconBox.className = "w-12 h-12 rounded-full flex items-center justify-center shrink-0 shadow-sm " + data.iconBoxClass;
+
+      actionWrap.classList.remove('hidden');
+      actionBtn.innerHTML = `<span>${data.actionText}</span> &rarr;`;
+      actionBtn.href = data.actionHref;
+    }
+
+    function simulatePhotoSubmit() {
+      const btn = document.getElementById('btn-submit-photo');
+      btn.innerHTML = `<span class="material-symbols-outlined text-[18px] animate-spin">refresh</span><span>Transmitting Photo...</span>`;
+      setTimeout(() => {
+        btn.innerHTML = `<span class="material-symbols-outlined text-[18px]">check</span><span>Sent! Vet Notified</span>`;
+        setTimeout(() => {
+          document.getElementById('photo-modal').classList.add('hidden');
+          btn.innerHTML = `<span class="material-symbols-outlined text-[18px]">send</span><span>Submit for Fast Vet Review</span>`;
+        }, 1200);
+      }, 1000);
+    }
+  </script>
+</div></main><footer class="w-full bg-surface-container-low py-12 mt-space-xl shadow-[0_1px_8px_rgba(0,0,0,0.02)]"><div class="max-w-7xl mx-auto px-6 lg:px-12 flex flex-col md:flex-row items-center justify-between gap-space-md"><div class="flex items-center gap-space-sm"><div class="w-7 h-7 rounded-full bg-secondary-container flex items-center justify-center text-primary"><span class="material-symbols-outlined text-[16px]">spa</span></div><span class="font-label-md text-label-md text-on-surface-variant">PetTot Recovery &amp; Rehabilitation Portal • Compassionate Post-Operative Companion</span></div><div class="flex items-center gap-6"><span class="font-body-sm text-body-sm text-on-surface-variant">Bay Animal Clinic: (555) 234-PETS</span><span class="font-body-sm text-body-sm text-on-surface-variant">24/7 Emergency: (800) 555-PETS</span><span class="font-body-sm text-body-sm text-on-surface-variant">© 2024 PetTot Care Inc.</span></div></div></footer></body></html>

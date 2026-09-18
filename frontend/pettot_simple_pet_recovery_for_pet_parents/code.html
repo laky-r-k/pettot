@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "surface": "#fff8f6", "outline": "#727970", "surface-container": "#f3eceb", "on-primary-container": "#afe2b3", "tertiary-fixed-dim": "#f0bd8b", "on-primary-fixed-variant": "#22502d", "surface-container-lowest": "#ffffff", "tertiary-container": "#7b542b", "on-error": "#ffffff", "on-primary-fixed": "#00210a", "inverse-on-surface": "#f6efee", "on-primary": "#ffffff", "outline-variant": "#c1c9be", "primary-container": "#386641", "surface-bright": "#fff8f6", "secondary-fixed-dim": "#aad0ad", "tertiary": "#603d16", "background": "#fff8f6", "error-container": "#ffdad6", "secondary-container": "#c3e9c5", "primary": "#204e2b", "on-secondary-fixed": "#00210b", "on-surface-variant": "#414941", "inverse-surface": "#32302f", "on-background": "#1d1b1a", "surface-dim": "#dfd9d7", "surface-container-low": "#f9f2f1", "surface-variant": "#e7e1e0", "on-tertiary-fixed-variant": "#623f18", "secondary-fixed": "#c6ecc8", "surface-container-highest": "#e7e1e0", "on-error-container": "#93000a", "surface-container-high": "#ede7e5", "on-secondary-fixed-variant": "#2d4e33", "on-surface": "#1d1b1a", "primary-fixed": "#bcefc0", "error": "#ba1a1a", "secondary": "#44664a", "on-tertiary": "#ffffff", "on-secondary-container": "#486a4e", "primary-fixed-dim": "#a0d3a5", "on-tertiary-fixed": "#2c1600", "on-tertiary-container": "#ffcb9a", "surface-tint": "#3a6843", "inverse-primary": "#a0d3a5", "on-secondary": "#ffffff", "tertiary-fixed": "#ffdcbd" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "margin-lg": "3rem", "gutter": "1rem", "gutter-md": "1.5rem", "space-xl": "2.5rem", "margin-md": "1.5rem", "space-lg": "1.5rem", "gutter-lg": "2rem", "space-xs": "0.25rem", "space-md": "1rem", "margin": "1rem", "space-sm": "0.5rem" }, "fontFamily": { "label-lg": ["Plus Jakarta Sans"], "body-md": ["Nunito Sans"], "body-lg": ["Nunito Sans"], "headline-sm": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "body-sm": ["Nunito Sans"], "headline-lg-mobile": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "display-mobile": ["Plus Jakarta Sans"], "headline-lg": ["Plus Jakarta Sans"], "display": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"] }, "fontSize": { "label-lg": ["15px", { "lineHeight": "20px", "fontWeight": "600" }], "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }], "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }], "label-md": ["13px", { "lineHeight": "18px", "fontWeight": "600" }], "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "0em", "fontWeight": "700" }], "label-sm": ["11px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "display-mobile": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "display": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-md": ["22px", { "lineHeight": "28px", "fontWeight": "600" }] } } } };</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased min-h-screen"><header class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-20 max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between gap-gutter-md"><div class="flex items-center gap-6"><div class="flex items-center gap-space-sm cursor-pointer select-none"><div class="w-9 h-9 rounded-full bg-secondary-container flex items-center justify-center text-primary"><span class="material-symbols-outlined text-[20px]">pets</span></div><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-primary tracking-tight">PetTot</span><span class="font-label-sm text-label-sm text-on-surface-variant -mt-1">Gentle Recovery</span></div></div><div class="hidden xl:flex items-center bg-surface-container-low px-3 py-1.5 rounded-full gap-space-sm"><div class="w-2.5 h-2.5 rounded-full bg-primary-container animate-pulse"></div><div class="flex items-baseline gap-1.5"><span class="font-label-md text-label-md text-on-surface font-semibold">Milo</span><span class="font-body-sm text-body-sm text-on-surface-variant">Golden Retriever</span><span class="text-outline-variant font-body-sm text-body-sm">•</span><span class="font-label-md text-label-md text-primary font-semibold">Day 5 of Recovery</span></div><span class="material-symbols-outlined text-on-surface-variant text-[18px] cursor-pointer hover:text-on-surface">unfold_more</span></div></div><nav class="hidden md:flex items-center gap-2 bg-surface-container-low/70 p-1.5 rounded-full" data-active-classes="bg-secondary-container text-on-secondary-container rounded-full"><a aria-current="page" class="px-4 py-2 font-label-md transition-colors bg-secondary-container text-on-secondary-container rounded-full" data-path="recovery-overview" href="#">Recovery Overview</a><a class="px-4 py-2 font-label-md text-label-md text-on-surface-variant hover:text-on-surface rounded-full transition-colors" data-path="daily-check-in" href="#">Daily Check-in</a><a class="px-4 py-2 font-label-md text-label-md text-on-surface-variant hover:text-on-surface rounded-full transition-colors" data-path="care-team-notes" href="#">Care Team Notes</a><a class="px-4 py-2 font-label-md text-label-md text-on-surface-variant hover:text-on-surface rounded-full transition-colors" data-path="help-and-emergency" href="#">Help &amp; Emergency</a></nav><div class="flex items-center gap-3"><a class="hidden sm:inline-flex items-center gap-space-xs px-4 py-2 rounded-full bg-error-container text-on-error-container hover:bg-error hover:text-on-error transition-colors font-label-md text-label-md" data-path="help-and-emergency" href="#"><span class="material-symbols-outlined text-[18px]">e911_emergency</span><span>Emergency Vet</span></a><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-20 bg-surface"><div class="flex flex-col w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 py-8 space-y-8">
+<!-- TOP REASSURING STATUS BANNER -->
+<section class="relative overflow-hidden rounded-3xl bg-surface-container-lowest p-6 sm:p-10 shadow-sm">
+<div class="absolute -right-16 -top-16 w-80 h-80 rounded-full bg-secondary-container/40 blur-3xl pointer-events-none"></div>
+<div class="absolute right-1/3 -bottom-20 w-64 h-64 rounded-full bg-surface-container/60 blur-2xl pointer-events-none"></div>
+<div class="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+<div class="space-y-4 max-w-3xl">
+<div class="flex flex-wrap items-center gap-3">
+<span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px] text-primary" style="font-variation-settings: 'FILL' 1;">verified</span>
+            On Track — Normal Progress
+          </span>
+<span class="text-on-surface-variant font-label-md text-label-md flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+            Updated 42 mins ago
+          </span>
+</div>
+<div class="space-y-2">
+<h1 class="font-display text-display text-primary tracking-tight">
+            Milo is healing peacefully today
+          </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+            Your care team reviewed Milo’s morning check-in photos. The surgical site is resting clean and dry, his walking balance is improving gently, and all prescribed doses are fully up to date.
+          </p>
+</div>
+<!-- Dr. Abernathy Note Card -->
+<div class="flex items-start gap-4 p-4 sm:p-5 rounded-2xl bg-surface-container-low">
+<div class="w-12 h-12 rounded-full overflow-hidden shrink-0 shadow-sm">
+<img class="w-full h-full object-cover" data-alt="A warm, reassuring portrait of a female veterinarian in soft sage medical attire, smiling warmly in a gentle natural-light clinic room." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJovlpI1F4Ljn76IFBiXhw_YVr7t4f52I10StKE0AIO1kkfody3mMJo16IS8s3F5uod3CZaX6H38fHel-TfbbLqsqy7Dpe7N6BmYuL2jqGZCA8DwnKicyV-ono4Qplxa_9cUk2tg6BC5HNyfzVogIi5LCHqhkDg_5n0txVnec7DCXJqwmowsrLNjGOqchurz6tvgVgheUnCpxEU8e7qmrCDg45kaLloIMC6JR095GwyO23WRXWF14"/>
+</div>
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<span class="font-label-md text-label-md text-primary">Dr. Abernathy</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">• Bay Animal Hospital</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface italic">
+              “Keep up the wonderful care, Sarah! The subtle pinkness near the stitches is completely expected for Day 5 and is already settling down nicely. Milo is right where we want him to be. Continue short 5-minute garden walks only.”
+            </p>
+</div>
+</div>
+</div>
+<!-- Quick Snapshot Badge Box -->
+<div class="w-full lg:w-72 shrink-0 p-5 rounded-2xl bg-surface-container flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-on-surface-variant">Recovery Stage</span>
+<span class="font-label-sm text-label-sm text-primary uppercase font-bold tracking-wider">Early Healing</span>
+</div>
+<div class="space-y-1.5">
+<div class="flex justify-between font-label-md text-label-md">
+<span class="text-on-surface font-semibold">Day 5 of 14</span>
+<span class="text-primary font-bold">35% Completed</span>
+</div>
+<!-- Reassuring smooth progress bar -->
+<div class="w-full h-3 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary-container rounded-full transition-all duration-500" style="width: 35.7%;"></div>
+</div>
+</div>
+<div class="pt-2 flex flex-col gap-2">
+<div class="flex items-center gap-2 text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-primary text-[18px]">calendar_today</span>
+<span>Stitch check appointment: <strong class="text-on-surface font-semibold">Thursday</strong></span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-primary text-[18px]">nature_people</span>
+<span>Garden leash walks only</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- TWO-COLUMN BENTO: TODAY'S ROUTINE & MEDICATIONS -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- DAILY CHECK-IN STEPS (7 cols) -->
+<div class="lg:col-span-7 flex flex-col space-y-4">
+<div class="flex items-center justify-between px-2">
+<div class="space-y-0.5">
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Today’s Recovery Steps</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Simple tasks to keep Milo comfortable and rested</p>
+</div>
+<span class="font-label-md text-label-md px-3 py-1 rounded-full bg-surface-container text-on-surface-variant">2 of 3 done</span>
+</div>
+<div class="space-y-3">
+<!-- Photo Check (Completed) -->
+<div class="p-5 rounded-2xl bg-surface-container-lowest shadow-sm flex items-center justify-between gap-4">
+<div class="flex items-center gap-4 min-w-0">
+<div class="w-14 h-14 rounded-xl overflow-hidden shrink-0 shadow-sm relative">
+<img class="w-full h-full object-cover" data-alt="A safe, clean macro view of a golden retriever's shaved knee area showing a neat surgical line healing cleanly on a cozy soft blanket." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVRbdoM3O0jB_N-DJ1YXF-bJpVQmZk_zrBTL7FawkYq1v4liMKTgDrfwtEm_p80S95TWTGY-jXWZzFmq7TYEUT3qRB-svjOiadjk65PjzrXo6Wbc0qxH7MggpvkfcxpGfI9UA_piAHSQAtoxOktccPZYQfj-1pDj5XMWK1iE7AvYZHk0fU0Y8PVqG4JfUDOPNANOuMbv6MdSh6qDHLKR368Jozefjs8n7C3EgXCKzpFoYzKjVzd7Q"/>
+<div class="absolute inset-0 bg-primary/10"></div>
+</div>
+<div class="space-y-0.5 min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-label-lg text-label-lg text-on-surface">Morning Incision Photo</span>
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">Completed at 9:30 AM • Looks great &amp; dry</p>
+</div>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<span class="inline-flex items-center gap-1 text-primary font-label-md text-label-md bg-secondary-container/50 px-3 py-1.5 rounded-full">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+              Reviewed
+            </span>
+</div>
+</div>
+<!-- Walking Video (Completed) -->
+<div class="p-5 rounded-2xl bg-surface-container-lowest shadow-sm flex items-center justify-between gap-4">
+<div class="flex items-center gap-4 min-w-0">
+<div class="w-14 h-14 rounded-xl bg-secondary-container flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-[26px]">directions_walk</span>
+</div>
+<div class="space-y-0.5 min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-label-lg text-label-lg text-on-surface">Gentle Walking Clip</span>
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">Logged at 1:15 PM • Vet confirmed light toe-touch</p>
+</div>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<span class="inline-flex items-center gap-1 text-primary font-label-md text-label-md bg-secondary-container/50 px-3 py-1.5 rounded-full">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+              Reviewed
+            </span>
+</div>
+</div>
+<!-- Evening Pain & Comfort Check (Actionable) -->
+<div class="p-5 rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+<div class="flex items-center gap-4 min-w-0">
+<div class="w-14 h-14 rounded-xl bg-surface-container flex items-center justify-center text-tertiary-container shrink-0">
+<span class="material-symbols-outlined text-[26px]">bedtime</span>
+</div>
+<div class="space-y-0.5 min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-label-lg text-label-lg text-on-surface">Evening Comfort Check</span>
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed text-label-sm font-label-sm">Due Soon</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Recommended around 7:00 PM before quiet hours</p>
+</div>
+</div>
+<button class="w-full sm:w-auto px-5 py-2.5 rounded-full bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md flex items-center justify-center gap-2 transition-all shadow-sm">
+<span>Start 2-Min Check-in</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- MEDICATIONS SCHEDULE (5 cols) -->
+<div class="lg:col-span-5 flex flex-col space-y-4">
+<div class="flex items-center justify-between px-2">
+<div class="space-y-0.5">
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Milo’s Comfort Meds</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Gentle routine with food</p>
+</div>
+<span class="text-primary font-label-md text-label-md flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">schedule</span> 3 daily
+        </span>
+</div>
+<div class="space-y-3">
+<!-- Morning Dose (Taken) -->
+<div class="p-4 rounded-2xl bg-surface-container-lowest shadow-sm flex items-center justify-between gap-3">
+<div class="flex items-center gap-3">
+<div class="w-11 h-11 rounded-full bg-secondary-container flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-[20px]">wb_sunny</span>
+</div>
+<div class="space-y-0.5">
+<div class="flex items-center gap-2">
+<span class="font-label-md text-label-md text-on-surface">Carprofen</span>
+<span class="text-on-surface-variant font-body-sm text-body-sm">(Anti-inflammatory)</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">1 tasty chewable • 8:00 AM</p>
+</div>
+</div>
+<span class="text-primary font-label-md text-label-md flex items-center gap-1 bg-surface-container px-2.5 py-1 rounded-full">
+<span class="material-symbols-outlined text-[16px]">done</span> Given
+          </span>
+</div>
+<!-- Midday Dose (Taken) -->
+<div class="p-4 rounded-2xl bg-surface-container-lowest shadow-sm flex items-center justify-between gap-3">
+<div class="flex items-center gap-3">
+<div class="w-11 h-11 rounded-full bg-secondary-container flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-[20px]">pill</span>
+</div>
+<div class="space-y-0.5">
+<div class="flex items-center gap-2">
+<span class="font-label-md text-label-md text-on-surface">Gabapentin</span>
+<span class="text-on-surface-variant font-body-sm text-body-sm">(Calm &amp; comfort)</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">1 soft capsule • 12:30 PM</p>
+</div>
+</div>
+<span class="text-primary font-label-md text-label-md flex items-center gap-1 bg-surface-container px-2.5 py-1 rounded-full">
+<span class="material-symbols-outlined text-[16px]">done</span> Given
+          </span>
+</div>
+<!-- Evening Dose (Upcoming / Interactive) -->
+<div class="p-4 rounded-2xl bg-surface-container-lowest shadow-sm flex items-center justify-between gap-3 transition-all duration-300" id="evening-med-card">
+<div class="flex items-center gap-3">
+<div class="w-11 h-11 rounded-full bg-tertiary-fixed flex items-center justify-center text-on-tertiary-fixed shrink-0">
+<span class="material-symbols-outlined text-[20px]">bedtime</span>
+</div>
+<div class="space-y-0.5">
+<div class="flex items-center gap-2">
+<span class="font-label-md text-label-md text-on-surface">Gabapentin</span>
+<span class="text-on-surface-variant font-body-sm text-body-sm">(Night comfort)</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">1 soft capsule • 8:30 PM</p>
+</div>
+</div>
+<button class="px-3.5 py-2 rounded-full bg-secondary-container text-on-secondary-container hover:bg-primary hover:text-on-primary font-label-md text-label-md transition-colors flex items-center gap-1.5 shrink-0" id="mark-given-btn" onclick="toggleMedGiven()">
+<span class="material-symbols-outlined text-[16px]">check</span>
+<span>Mark Given</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- HEALING PHOTO COMPARISON (Zero Medical Jargon) -->
+<section class="rounded-3xl bg-surface-container-lowest p-6 sm:p-8 shadow-sm space-y-6">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div class="space-y-1">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container text-primary font-label-sm text-label-sm uppercase tracking-wider">
+<span class="material-symbols-outlined text-[15px]">photo_library</span>
+          Visual Progress
+        </div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">How Milo’s Incision Is Healing</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">
+          Comparing Day 1 (discharge day) with today's photo shows healthy, natural progress.
+        </p>
+</div>
+<!-- Simple "What to look for" chip -->
+<div class="flex items-center gap-2 bg-surface-container-low px-4 py-2.5 rounded-2xl text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-primary text-[20px]">spa</span>
+<span>What good healing looks like: <strong>Dry stitches, light pink tint, no gap</strong></span>
+</div>
+</div>
+<!-- Side-by-Side Photos -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Day 1 Card -->
+<div class="flex flex-col space-y-3 bg-surface-container-low p-4 sm:p-5 rounded-2xl">
+<div class="flex items-center justify-between">
+<div>
+<span class="font-label-lg text-label-lg text-on-surface">Day 1: Hospital Discharge</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Saturday morning</p>
+</div>
+<span class="px-2.5 py-1 rounded-full bg-surface-container-highest text-on-surface-variant font-label-sm text-label-sm">
+            Baseline
+          </span>
+</div>
+<div class="w-full h-56 sm:h-64 rounded-xl overflow-hidden relative shadow-sm">
+<img class="w-full h-full object-cover" data-alt="Clear medical documentation photo of a golden retriever dog knee with neat sterile black sutures, mild normal post-surgical puffiness, very clean skin, warm domestic lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKyG8WTbORkVAdx-Po28MKaV-mV1JPngMx41E-VZ6OtKfzW81RugzZGu-g-enkS4Jun9RDmRXOTEnXM6I1DvugK74FM3PyJcuBs8AoYtUBDdBxs6Q3AlqhcQxkme6e7HfroN_WOMyvc_8rFFHuLqiGVZ3xg3tUvAnaKDSZBx65fNi2BT-_3S7J4ayU3j2CelLavR-ZfpIr2PK1EKZwoEKThMV7OA_2KBbPKMO7Ayu3O2vWyQCvpuU"/>
+<div class="absolute bottom-3 left-3 bg-surface/90 backdrop-blur-md px-3 py-1 rounded-full font-label-sm text-label-sm text-on-surface">
+            Day 1 Post-Op
+          </div>
+</div>
+<div class="flex items-start gap-2 pt-1 text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[18px] text-primary shrink-0 mt-0.5">info</span>
+<span>Fresh stitches with expected immediate post-surgery puffiness. Completely normal start.</span>
+</div>
+</div>
+<!-- Day 5 (Today) Card -->
+<div class="flex flex-col space-y-3 bg-surface-container-low p-4 sm:p-5 rounded-2xl relative">
+<div class="flex items-center justify-between">
+<div>
+<span class="font-label-lg text-label-lg text-primary font-bold">Day 5: Today</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Captured at 9:30 AM</p>
+</div>
+<span class="px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">favorite</span>
+            Healing Beautifully
+          </span>
+</div>
+<div class="w-full h-56 sm:h-64 rounded-xl overflow-hidden relative shadow-sm">
+<img class="w-full h-full object-cover" data-alt="Follow-up photo of the same golden retriever knee surgical area on day five, showing flat edges, clean dry skin with gentle healthy pink tone, zero fluid or swelling, resting on a soft cozy bed." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-jaBF5HQLdQotpo_tdYh73S1yHb3pC30BD0Xil5z2sCkyiy-3_T-GGpj0uLLLphivrJlsBxAbEJGKOqj7GrTEis3_wGLzzy5gcMKtJPIQEBvATuWovq84G1qKS0wc7kYekCisEDQEMxI0Xp7QW-YQKjCcWbRqIVLbOOhMrq-HA8rFV8whZcsNVJ-TSM9uJ_QJo-A67g1hIB0xIWQgd17GO4n46rCeRlskQupvYC6WboqWVsK2sJ8"/>
+<div class="absolute bottom-3 left-3 bg-surface/90 backdrop-blur-md px-3 py-1 rounded-full font-label-sm text-label-sm text-on-surface flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+            Today’s Photo
+          </div>
+</div>
+<div class="flex items-start gap-2 pt-1 text-on-surface font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[18px] text-primary shrink-0 mt-0.5">check_circle</span>
+<span><strong>Noticeable improvement:</strong> Edges are smooth and dry, swelling has calmed down, and the gentle pink color confirms healthy circulation.</span>
+</div>
+</div>
+</div>
+</section>
+<!-- COMFORT & ENERGY TRENDS (Gentle, Intuitive, No Intimidating Charts) -->
+<section class="rounded-3xl bg-surface-container-lowest p-6 sm:p-8 shadow-sm space-y-6">
+<div class="space-y-1">
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Milo’s Daily Comfort &amp; Mood</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">A reassuring look at how he’s feeling throughout his rest</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Comfort Card -->
+<div class="p-6 rounded-2xl bg-surface-container-low flex flex-col justify-between gap-4">
+<div class="flex items-center justify-between">
+<div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[24px]">sentiment_satisfied</span>
+</div>
+<span class="px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm">Past 24 hours</span>
+</div>
+<div class="space-y-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Overall Comfort</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Very Peaceful &amp; Resting</h3>
+<div class="flex items-center gap-1 text-tertiary">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[20px] text-outline-variant">star</span>
+<span class="font-label-md text-label-md text-on-surface ml-1 font-semibold">4 / 5</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            No whining, sleeping peacefully through the night, accepting gentle chin scratches happily.
+          </p>
+</div>
+</div>
+<!-- Appetite Card -->
+<div class="p-6 rounded-2xl bg-surface-container-low flex flex-col justify-between gap-4">
+<div class="flex items-center justify-between">
+<div class="w-12 h-12 rounded-full bg-tertiary-fixed flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-[24px]">lunch_dining</span>
+</div>
+<span class="px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm">Excellent</span>
+</div>
+<div class="space-y-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Appetite &amp; Water</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Full Appetite Restored</h3>
+<div class="flex items-center gap-2">
+<span class="font-label-lg text-label-lg text-primary font-bold">100% of Meals Eaten</span>
+<span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            Ate entire morning kibble bowl with chicken broth. Drinking plenty of fresh water calmly.
+          </p>
+</div>
+</div>
+<!-- Mobility Card -->
+<div class="p-6 rounded-2xl bg-surface-container-low flex flex-col justify-between gap-4">
+<div class="flex items-center justify-between">
+<div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[24px]">pets</span>
+</div>
+<span class="px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm">On Schedule</span>
+</div>
+<div class="space-y-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Leg Weight-Bearing</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Gentle Toe-Touching</h3>
+<div class="flex items-center gap-2">
+<span class="font-label-lg text-label-lg text-primary font-bold">Toe-Touch Walking</span>
+<span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            Lightly resting his operated paw on the grass during potty breaks. Exactly what Dr. Abernathy wants for Day 5.
+          </p>
+</div>
+</div>
+</div>
+</section>
+<!-- DIRECT LINE TO YOUR CARE TEAM (Zero Panic, Pure Reassurance) -->
+<section class="rounded-3xl bg-surface-container-low p-6 sm:p-8 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+<div class="flex items-start gap-4 max-w-2xl">
+<div class="w-14 h-14 rounded-2xl bg-surface-container-lowest shadow-sm flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-[28px]">volunteer_activism</span>
+</div>
+<div class="space-y-1">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">
+          Have a question or need a second opinion on Milo?
+        </h2>
+<p class="font-body-md text-body-md text-on-surface-variant">
+          Never hesitate to ask. Even small questions about posture, sleeping positions, or licking habits are welcomed by our veterinary nurses.
+        </p>
+</div>
+</div>
+<!-- Quick Action Buttons -->
+<div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+<button class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-surface-container-lowest hover:bg-surface text-primary font-label-md text-label-md transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">photo_camera</span>
+<span>Send Quick Photo</span>
+</button>
+<button class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">chat_bubble</span>
+<span>Message Dr. Abernathy</span>
+</button>
+<a class="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-full bg-error-container text-on-error-container hover:bg-error hover:text-on-error font-label-md text-label-md transition-colors" href="tel:8005557387">
+<span class="material-symbols-outlined text-[18px]">phone</span>
+<span class="hidden sm:inline">24/7 Bay Animal Clinic</span>
+</a>
+</div>
+</section>
+</div>
+<script>
+  function toggleMedGiven() {
+    const btn = document.getElementById('mark-given-btn');
+    const card = document.getElementById('evening-med-card');
+    
+    if (btn && card) {
+      btn.innerHTML = `
+        <span class="material-symbols-outlined text-[16px]">done_all</span>
+        <span>Marked Given</span>
+      `;
+      btn.className = "px-3.5 py-2 rounded-full bg-surface-container text-primary font-label-md text-label-md flex items-center gap-1.5 shrink-0";
+      btn.disabled = true;
+      card.classList.add('bg-secondary-container/20');
+    }
+  }
+</script></main><footer class="w-full bg-surface-container-low py-12 mt-space-xl shadow-[0_1px_8px_rgba(0,0,0,0.02)]"><div class="max-w-7xl mx-auto px-6 lg:px-12 flex flex-col md:flex-row items-center justify-between gap-space-md"><div class="flex items-center gap-space-sm"><div class="w-7 h-7 rounded-full bg-secondary-container flex items-center justify-center text-primary"><span class="material-symbols-outlined text-[16px]">spa</span></div><span class="font-label-md text-label-md text-on-surface-variant">PetTot Recovery &amp; Rehabilitation Portal • Compassionate Post-Operative Companion</span></div><div class="flex items-center gap-6"><span class="font-body-sm text-body-sm text-on-surface-variant">24/7 Support Hotline: (800) 555-PETS</span><span class="font-body-sm text-body-sm text-on-surface-variant">© 2024 PetTot Care Inc.</span></div></div></footer></body></html>
