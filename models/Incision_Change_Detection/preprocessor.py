@@ -70,3 +70,10 @@ class ImagePreprocessor:
         normalized_color = self.gray_world_normalization(cropped)
         scaled_image = self.spatial_scale_normalization(normalized_color)
         return scaled_image
+
+if '__name__' == '__main__':
+    # Example usage
+    preprocessor = ImagePreprocessor()
+    test_image = cv2.imread("image.jpg")
+    processed_image =preprocessor.crop_surgical_region(test_image)
+    cv2.imwrite("processed_image.jpg", processed_image)
