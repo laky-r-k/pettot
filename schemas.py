@@ -1,11 +1,13 @@
 from pydantic import BaseModel
 
+
 class PetCreate(BaseModel):
     name: str
     species: str
     age: int
     is_adopted: bool = False
-    owner_id: int   # which user this pet belongs to
+    # owner_id removed: it now comes from the logged-in user
+
 
 class PetResponse(BaseModel):
     id: int
@@ -18,17 +20,19 @@ class PetResponse(BaseModel):
     class Config:
         from_attributes = True
 
+
+from typing import Literal
+
 class UserCreate(BaseModel):
-    
     name: str
     username: str
     email: str
     password: str
-    role: str  # "owner" or "doctor"
+    role: Literal["owner", "doctor"]
     license_number: str | None = None
 
+
 class UserResponse(BaseModel):
-    
     id: int
     username: str
     name: str
@@ -37,13 +41,13 @@ class UserResponse(BaseModel):
     license_number: str | None = None
 
     class Config:
-        from_attributes = True 
-
+        from_attributes = True
 
 
 class SubscriptionCreate(BaseModel):
-    owner_id: int
     doctor_id: int
+    # owner_id removed: the logged-in owner is the one subscribing
+
 
 class SubscriptionResponse(BaseModel):
     id: int
@@ -52,3 +56,8 @@ class SubscriptionResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
