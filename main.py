@@ -1,24 +1,36 @@
 # main.py
 from typing import Optional
 
-import jwt
-from fastapi import FastAPI, Depends, HTTPException
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
-from auth import hash_password, verify_password, create_access_token, SECRET_KEY, ALGORITHM
+from auth import verify_firebase_token
 from database import SessionLocal, engine, Base
 from models import Pet, User, Subscription
 from schemas import (
     PetCreate, PetResponse,
     UserCreate, UserResponse,
     SubscriptionCreate, SubscriptionResponse,
-    Token,
 )
 
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI()
+app = FastAPI(
+    title="PetTot Practice Management API",
+    description="Backend API with Firebase Authentication and Role-Based Access Control",
+    version="1.0.0"
+)
+
+# Enable CORS for Web and Mobile clients
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 # ---------- dependencies ----------
@@ -31,26 +43,31 @@ def get_db():
         db.close()
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+bearer_scheme = HTTPBearer()
 
 
-def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-    credentials_exception = HTTPException(
-        status_code=401,
-        detail="Invalid or expired token",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        user_id = payload.get("sub")
-        if user_id is None:
-            raise credentials_exception
-    except jwt.PyJWTError:
-        raise credentials_exception
+def get_firebase_user_claims(credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme)) -> dict:
+    """Verifies Firebase ID token from Authorization: Bearer <token> header."""
+    token = credentials.credentials
+    return verify_firebase_token(token)
 
-    user = db.query(User).filter(User.id == int(user_id)).first()
+
+def get_current_user(claims: dict = Depends(get_firebase_user_claims), db: Session = Depends(get_db)) -> User:
+    """Extracts user from DB mapped by verified Firebase UID."""
+    firebase_uid = claims.get("uid")
+    if not firebase_uid:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token: missing uid in claims",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    user = db.query(User).filter(User.firebase_uid == firebase_uid).first()
     if user is None:
-        raise credentials_exception
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User profile not registered. Please complete profile registration at POST /users/",
+        )
     return user
 
 
@@ -81,30 +98,43 @@ def get_pet_for_user(pet_id: int, user: User, db: Session, owner_only: bool = Fa
     raise HTTPException(status_code=403, detail="You don't have access to this pet")
 
 
-# ---------- auth & users ----------
+# ---------- health ----------
 
-@app.post("/login", response_model=Token)
-def login(form: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.username == form.username).first()
-
-    if not user or not verify_password(form.password, user.password):
-        raise HTTPException(
-            status_code=401,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-
-    token = create_access_token({"sub": str(user.id), "role": user.role})
-    return {"access_token": token, "token_type": "bearer"}
+@app.get("/health", tags=["Health"])
+def health_check():
+    return {"status": "online", "service": "PetTot Backend API", "auth": "Firebase"}
 
 
-@app.post("/users/", response_model=UserResponse)
-def create_user(user: UserCreate, db: Session = Depends(get_db)):
+# ---------- users & profile ----------
+
+@app.post("/users/", response_model=UserResponse, tags=["Users"])
+def register_user(
+    user: UserCreate,
+    claims: dict = Depends(get_firebase_user_claims),
+    db: Session = Depends(get_db),
+):
+    """
+    Onboarding endpoint: Call this after Firebase sign-up to complete local profile registration.
+    """
+    firebase_uid = claims.get("uid")
+    email = claims.get("email") or user.email
+    if not email:
+        raise HTTPException(status_code=400, detail="Email is required from token or request body")
+
+    # Check if already registered
+    existing_user = db.query(User).filter(User.firebase_uid == firebase_uid).first()
+    if existing_user:
+        raise HTTPException(status_code=400, detail="User already registered with this Firebase account")
+
+    # Check username uniqueness
+    if db.query(User).filter(User.username == user.username).first():
+        raise HTTPException(status_code=400, detail="Username is already taken")
+
     db_user = User(
+        firebase_uid=firebase_uid,
         username=user.username,
         name=user.name,
-        email=user.email,
-        password=hash_password(user.password),
+        email=email,
         role=user.role,
         license_number=user.license_number,
     )
@@ -114,20 +144,19 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     return db_user
 
 
-@app.get("/me", response_model=UserResponse)
+@app.get("/me", response_model=UserResponse, tags=["Users"])
 def read_me(current_user: User = Depends(get_current_user)):
     return current_user
 
 
-@app.get("/users/", response_model=list[UserResponse])
+@app.get("/users/", response_model=list[UserResponse], tags=["Users"])
 def list_users(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    # Now requires login. Still lists everyone, so treat as temporary.
     return db.query(User).all()
 
 
 # ---------- pets ----------
 
-@app.post("/pets/", response_model=PetResponse)
+@app.post("/pets/", response_model=PetResponse, tags=["Pets"])
 def create_pet(
     pet: PetCreate,
     owner: User = Depends(require_role("owner")),
@@ -140,7 +169,7 @@ def create_pet(
     return db_pet
 
 
-@app.get("/pets/", response_model=list[PetResponse])
+@app.get("/pets/", response_model=list[PetResponse], tags=["Pets"])
 def list_pets(
     species: Optional[str] = None,
     is_adopted: Optional[bool] = None,
@@ -163,7 +192,7 @@ def list_pets(
     return query.all()
 
 
-@app.get("/pets/{pet_id}", response_model=PetResponse)
+@app.get("/pets/{pet_id}", response_model=PetResponse, tags=["Pets"])
 def get_pet(
     pet_id: int,
     current_user: User = Depends(get_current_user),
@@ -172,7 +201,7 @@ def get_pet(
     return get_pet_for_user(pet_id, current_user, db)
 
 
-@app.put("/pets/{pet_id}", response_model=PetResponse)
+@app.put("/pets/{pet_id}", response_model=PetResponse, tags=["Pets"])
 def update_pet(
     pet_id: int,
     updated_pet: PetCreate,
@@ -191,7 +220,7 @@ def update_pet(
     return pet
 
 
-@app.delete("/pets/{pet_id}")
+@app.delete("/pets/{pet_id}", tags=["Pets"])
 def delete_pet(
     pet_id: int,
     current_user: User = Depends(get_current_user),
@@ -205,7 +234,7 @@ def delete_pet(
 
 # ---------- subscriptions ----------
 
-@app.post("/subscriptions/", response_model=SubscriptionResponse)
+@app.post("/subscriptions/", response_model=SubscriptionResponse, tags=["Subscriptions"])
 def create_subscription(
     sub: SubscriptionCreate,
     owner: User = Depends(require_role("owner")),
@@ -222,7 +251,7 @@ def create_subscription(
     return db_sub
 
 
-@app.get("/doctors/me/subscriptions/")
+@app.get("/doctors/me/subscriptions/", tags=["Subscriptions"])
 def list_my_subscriptions(doctor: User = Depends(require_role("doctor"))):
     result = []
     for sub in doctor.subscriptions_as_doctor:
