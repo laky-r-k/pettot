@@ -1,12 +1,217 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="refresh" content="0; url=pettot_welcome_patient_login/code.html" />
-    <title>PetTot — Gentle Recovery</title>
-  </head>
-  <body>
-    <p>Opening PetTot…</p>
-    <script>window.location.replace('pettot_welcome_patient_login/code.html');</script>
-  </body>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8f7f2">
+  <meta name="description" content="PetTot is a prototype recovery log for pets following surgery.">
+  <title>PetTot — A calmer recovery routine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+  <section id="login-screen" class="screen login-screen">
+    <div class="login-story">
+      <a class="brand" href="#login" aria-label="PetTot home"><span class="brand-mark" aria-hidden="true">🐾</span><span>pettot<span class="brand-sub">a gentler recovery routine</span></span></a>
+      <div class="login-copy">
+        <div class="eyebrow">Care is a team effort</div>
+        <h1>Your vet knows the plan.<br>You know your pet.</h1>
+        <p>Keep recovery notes, medication ticks and photo comparisons together — so the everyday details are easier to share with your veterinary team.</p>
+      </div>
+      <div class="story-footer"><span aria-hidden="true">✳</span> Made for the quiet days after surgery. Your veterinary team’s instructions always come first.</div>
+      <div class="login-art" aria-hidden="true"></div>
+    </div>
+    <div class="login-form-wrap">
+      <form id="demo-form" class="login-form">
+        <div class="eyebrow">Welcome to PetTot</div>
+        <h2>Let's take recovery one step at a time.</h2>
+        <p>This branch is a working prototype, not a live account system. Continue in demo mode to explore the owner journey.</p>
+        <div class="field" style="margin:24px 0 15px">
+          <label for="demo-email">Email (optional)</label>
+          <input id="demo-email" name="email" type="email" autocomplete="email" placeholder="you@example.com">
+          <small>This field is only a label for this browser session. No email is sent and no account is created.</small>
+        </div>
+        <button class="btn" type="submit" style="width:100%">Continue in demo mode <span aria-hidden="true">→</span></button>
+        <p class="note" style="margin-top:17px"><strong>Prototype privacy:</strong> your pet profile, check-ins and medication ticks are stored in this browser only. Photo analysis is sent to the API address configured inside the app.</p>
+      </form>
+    </div>
+  </section>
+
+  <section id="setup-screen" class="screen setup-wrap hidden">
+    <div class="setup-card">
+      <a class="brand" href="#login"><span class="brand-mark" aria-hidden="true">🐾</span><span>pettot<span class="brand-sub">a gentler recovery routine</span></span></a>
+      <section class="editorial-banner setup-banner" aria-label="Pet recovery setup">
+        <img class="decorative-photo" src="https://images.unsplash.com/photo-1541587631252-1690b345feca?auto=format&amp;fit=crop&amp;w=1300&amp;q=82" alt="" loading="lazy">
+        <div class="editorial-shade"></div>
+        <div class="editorial-content">
+          <div class="editorial-kicker">FIRST, THE ESSENTIALS</div>
+          <h2>Every recovery has its own story.</h2>
+          <p>Start with the details from your clinic’s discharge plan. You can return and update them at any time.</p>
+        </div>
+        <div class="editorial-action editorial-action-static"><span class="action-spark" aria-hidden="true">✳</span><span><strong>Built around your vet’s plan</strong><small>Your notes, in one place</small></span></div>
+      </section>
+      <div class="panel section-space">
+        <div class="step-head">
+          <div class="step-number">01</div>
+          <div><div class="eyebrow">First, the essentials</div><h1>Set up their recovery space.</h1><p>Use the details on your discharge sheet. You can come back and edit them later.</p></div>
+        </div>
+        <form id="setup-form">
+          <div class="form-grid">
+            <div class="field"><label for="pet-name-input">Pet's name *</label><input id="pet-name-input" name="petName" required maxlength="60" placeholder="e.g. Milo"></div>
+            <div class="field"><label for="species-input">Species *</label><select id="species-input" name="species" required><option value="">Choose one</option><option value="Dog">Dog</option><option value="Cat">Cat</option><option value="Other">Other</option></select></div>
+            <div class="field"><label for="breed-input">Breed (optional)</label><input id="breed-input" name="breed" maxlength="80" placeholder="e.g. Indie / mixed breed"></div>
+            <div class="field"><label for="procedure-input">Procedure or surgery *</label><input id="procedure-input" name="procedure" required maxlength="120" placeholder="Use the clinic's wording"></div>
+            <div class="field"><label for="surgery-date-input">Procedure date *</label><input id="surgery-date-input" name="surgeryDate" type="date" required></div>
+            <div class="field"><label for="clinic-input">Clinic name (optional)</label><input id="clinic-input" name="clinic" maxlength="120" placeholder="Your veterinary clinic"></div>
+            <div class="field"><label for="vet-name-input">Veterinarian / care team (optional)</label><input id="vet-name-input" name="vetName" maxlength="100" placeholder="Name of your contact"></div>
+            <div class="field"><label for="vet-phone-input">Clinic phone (optional)</label><input id="vet-phone-input" name="vetPhone" type="tel" autocomplete="tel" maxlength="40" placeholder="Include country code if needed"></div>
+            <div class="field full"><label for="vet-email-input">Clinic email (optional)</label><input id="vet-email-input" name="vetEmail" type="email" autocomplete="email" maxlength="160" placeholder="For preparing an email draft, not automatic sending"></div>
+            <div class="field full"><label for="instructions-input">Vet-provided recovery instructions (optional)</label><textarea id="instructions-input" name="instructions" maxlength="1200" placeholder="Activity limits, food instructions, follow-up date, incision care..."></textarea><small>Use your clinic's instructions as the source of truth. PetTot does not prescribe treatment.</small></div>
+          </div>
+          <div class="form-actions"><button class="btn btn-secondary" type="button" data-action="back-login">Back</button><button class="btn" type="submit">Save profile & continue <span aria-hidden="true">→</span></button></div>
+        </form>
+      </div>
+      <p class="footnote">Demo mode only: this form is not uploaded to a server and does not create a secure user account.</p>
+    </div>
+  </section>
+
+  <div id="workspace" class="workspace hidden">
+    <aside class="sidebar" aria-label="Main navigation">
+      <a class="brand" href="#overview"><span class="brand-mark" aria-hidden="true">🐾</span><span>pettot<span class="brand-sub">recovery companion</span></span></a>
+      <div class="nav-heading">Your recovery space</div>
+      <nav class="nav-list">
+        <button class="nav-link active" type="button" data-route="overview"><span class="nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg></span><span>Overview</span></button>
+        <button class="nav-link" type="button" data-route="checkin"><span class="nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 4h8M9 3h6a1 1 0 0 1 1 1v2H8V4a1 1 0 0 1 1-1Z"/><rect x="4" y="5" width="16" height="16" rx="2"/><path d="m8 13 2.5 2.5L16 10"/></svg></span><span>Daily check-in</span></button>
+        <button class="nav-link" type="button" data-route="photos"><span class="nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="12" cy="12" r="3.2"/><path d="m7 5 1.5-2h7L17 5"/></svg></span><span>Photo review</span></button>
+        <button class="nav-link" type="button" data-route="care"><span class="nav-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20.5 8.5c0 5-8.5 11-8.5 11s-8.5-6-8.5-11a4.5 4.5 0 0 1 8.5-2 4.5 4.5 0 0 1 8.5 2Z"/><path d="M8.5 12h2l1.2-2.4 1.7 4.8 1.2-2.4h1.9"/></svg></span><span>Care & contacts</span></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="pill pill-demo">● Demo mode</div>
+        <p class="local-note" style="margin:10px 0 14px">Entries stay in this browser. This prototype does not notify a clinic automatically.</p>
+        <button class="btn btn-secondary btn-sm" style="width:100%" type="button" data-route="setup">Edit pet profile</button>
+        <button class="text-link" style="margin-top:13px;font-size:.76rem" type="button" data-action="exit-demo">Exit demo session</button>
+      </div>
+    </aside>
+
+    <main class="main-column">
+      <header class="topbar">
+        <div class="topbar-left"><div class="eyebrow">PetTot · recovery log</div><h2 id="topbar-title">Today's overview</h2></div>
+        <div class="topbar-right"><span class="pill" id="topbar-pet">Pet profile not set</span><span class="pill pill-demo">Local demo</span></div>
+      </header>
+
+      <section id="page-overview" class="page active" aria-labelledby="overview-title">
+        <div class="mobile-brand"><span class="brand-mark" aria-hidden="true">🐾</span> PetTot</div>
+        <section class="editorial-banner overview-banner" aria-labelledby="overview-title">
+          <img class="decorative-photo" src="https://images.unsplash.com/photo-1509205477838-a534e43a849f?auto=format&amp;fit=crop&amp;w=1800&amp;q=85" alt="" loading="eager">
+          <div class="editorial-shade"></div>
+          <div class="editorial-content">
+            <div class="editorial-kicker" id="overview-date">YOUR RECOVERY SPACE</div>
+            <span class="editorial-status" id="recovery-day">RECOVERY OVERVIEW</span>
+            <h1 id="overview-title">How is <span id="hero-pet-name">your pet</span> doing today?</h1>
+            <p id="hero-summary">A short check-in helps you record what you notice and share useful context with your vet.</p>
+          </div>
+          <div class="editorial-action">
+            <span class="action-spark" aria-hidden="true">✳</span>
+            <span class="action-copy"><strong>Your next helpful step</strong><small>About two minutes</small></span>
+            <button class="light-cta" type="button" data-route="checkin">Start check-in <span aria-hidden="true">↗</span></button>
+          </div>
+        </section>
+        <div class="overview-grid">
+          <div>
+            <div class="summary-stats">
+              <div class="stat-card"><div class="stat-label">Today's check-in</div><p class="stat-value" id="stat-checkin">Not yet</p><div class="stat-foot" id="stat-checkin-foot">A few quick questions</div></div>
+              <div class="stat-card"><div class="stat-label">Medication log</div><p class="stat-value" id="stat-meds">No plan</p><div class="stat-foot" id="stat-meds-foot">Add the vet's schedule</div></div>
+              <div class="stat-card"><div class="stat-label">Recent photo analysis</div><p class="stat-value" id="stat-photo">None yet</p><div class="stat-foot" id="stat-photo-foot">Optional, experimental support</div></div>
+            </div>
+            <div class="recovery-moments section-space" aria-label="Gentle reminders for recovery">
+              <div class="moments-heading"><div><div class="eyebrow">THE LITTLE THINGS</div><h3>Recovery is a collection of small moments.</h3></div><span class="moments-paw" aria-hidden="true">✳</span></div>
+              <div class="moments-grid">
+                <article class="moment-card"><div class="moment-image"><img class="decorative-photo" src="https://images.unsplash.com/photo-1541587631252-1690b345feca?auto=format&amp;fit=crop&amp;w=500&amp;q=80" alt="A dog resting quietly on its bed" loading="lazy"><span>01</span></div><div class="moment-copy"><small>REST</small><strong>Keep things gentle</strong><p>Follow activity limits from your vet.</p></div></article>
+                <article class="moment-card"><div class="moment-image moment-image-cat"><img class="decorative-photo" src="https://images.unsplash.com/photo-1769068874492-a848eae2e5fa?auto=format&amp;fit=crop&amp;w=500&amp;q=80" alt="A cat tucked into a warm blanket" loading="lazy"><span>02</span></div><div class="moment-copy"><small>NOTICE</small><strong>Record what changes</strong><p>Small notes help tell the story.</p></div></article>
+                <article class="moment-card"><div class="moment-image moment-image-vet"><img class="decorative-photo" src="https://images.unsplash.com/photo-1770836037289-e00e5f351d11?auto=format&amp;fit=crop&amp;w=500&amp;q=80" alt="A veterinarian gently examining a dog" loading="lazy"><span>03</span></div><div class="moment-copy"><small>CONNECT</small><strong>Keep your vet close</strong><p>Ask early when something worries you.</p></div></article>
+              </div>
+            </div>
+            <div class="panel section-space"><div class="panel-head"><div><h3>Recent recovery notes</h3><p>Only notes recorded in this browser appear here.</p></div><button class="text-link" type="button" data-route="checkin">Add note</button></div><div id="checkin-history" class="history-list"></div></div>
+          </div>
+          <div class="stack">
+            <div class="panel"><div class="panel-head"><div><h3>Today's care plan</h3><p>Use your clinic's prescribed timing.</p></div><span class="pill">Local log</span></div><div class="task-row"><div class="task-icon">✓</div><div class="task-main"><strong>Daily check-in</strong><p id="task-checkin-desc">Record comfort, appetite and activity.</p></div><div class="task-right"><button class="btn btn-secondary btn-sm" data-route="checkin" type="button">Open</button></div></div><div class="task-row"><div class="task-icon">◉</div><div class="task-main"><strong>Photo comparison</strong><p>Compare the current incision with a baseline, or review facial indicators.</p></div><div class="task-right"><button class="btn btn-secondary btn-sm" data-route="photos" type="button">Open</button></div></div><div class="task-row"><div class="task-icon">♡</div><div class="task-main"><strong>Contact your clinic</strong><p>Keep your care team's details close at hand.</p></div><div class="task-right"><button class="btn btn-secondary btn-sm" data-route="care" type="button">Open</button></div></div></div>
+            <div class="panel"><div class="panel-head"><div><h3>Medication routine</h3><p>Track doses you administer. No device notifications are sent.</p></div></div><div id="med-list"></div><hr class="rule"><form id="medication-form"><div class="field"><label for="med-name">Medication name</label><input id="med-name" name="name" required maxlength="100" placeholder="As written on the label"></div><div class="form-grid" style="margin-top:12px"><div class="field"><label for="med-time">Planned time</label><input id="med-time" name="time" type="time" required></div><div class="field"><label for="med-instructions">Note (optional)</label><input id="med-instructions" name="instructions" maxlength="160" placeholder="Dose / vet's note"></div></div><button class="btn btn-secondary btn-sm" style="margin-top:12px" type="submit">Add to local log</button></form><p class="footnote">This is a log, not a dosing calculator. Never change a dose or give a missed dose based on this screen.</p></div>
+            <div class="note note-warn"><strong>Keep this in mind</strong><br>If your pet suddenly worsens, is struggling to breathe, collapses, has uncontrolled bleeding, or has another serious change, seek urgent veterinary help. Do not wait for an AI photo result.</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-checkin" class="page" aria-labelledby="checkin-title">
+        <div class="mobile-brand"><span class="brand-mark" aria-hidden="true">🐾</span> PetTot</div>
+        <section class="editorial-banner checkin-banner" aria-labelledby="checkin-title">
+          <img class="decorative-photo" src="https://images.unsplash.com/photo-1541587631252-1690b345feca?auto=format&amp;fit=crop&amp;w=1600&amp;q=82" alt="" loading="eager">
+          <div class="editorial-shade"></div>
+          <div class="editorial-content">
+            <div class="editorial-kicker">A SHORT ROUTINE, NOT A DIAGNOSIS</div>
+            <h1 id="checkin-title">The little details matter.</h1>
+            <p>Record what you can observe today. Your notes can help you explain changes to your veterinary team.</p>
+          </div>
+          <div class="editorial-action"><span class="action-spark" aria-hidden="true">✳</span><span class="action-copy"><strong>Daily check-in</strong><small id="checkin-date-pill">Today</small></span><span class="action-static-arrow" aria-hidden="true">↓</span></div>
+        </section>
+        <div class="checkin-layout">
+          <form id="checkin-form" class="panel">
+            <div class="panel-head"><div><h3>How has <span data-pet-name>your pet</span> been doing?</h3><p>Usually less than two minutes. You can save another check-in later in the day.</p></div><span class="pill">Owner observations</span></div>
+            <fieldset class="question"><legend>1. Overall comfort</legend><div class="option-grid"><label class="option"><input type="radio" name="comfort" value="Comfortable" required><span>Comfortable / settled</span></label><label class="option"><input type="radio" name="comfort" value="Quieter than usual"><span>Quieter than usual</span></label><label class="option"><input type="radio" name="comfort" value="Restless or distressed"><span>Restless / distressed</span></label></div></fieldset>
+            <fieldset class="question"><legend>2. Appetite</legend><div class="option-grid"><label class="option"><input type="radio" name="appetite" value="Usual appetite" required><span>Eating as expected</span></label><label class="option"><input type="radio" name="appetite" value="Eating less"><span>Eating less</span></label><label class="option"><input type="radio" name="appetite" value="Not eating"><span>Not eating</span></label></div></fieldset>
+            <fieldset class="question"><legend>3. Movement</legend><div class="option-grid"><label class="option"><input type="radio" name="mobility" value="As expected" required><span>As expected</span></label><label class="option"><input type="radio" name="mobility" value="More hesitant"><span>More hesitant</span></label><label class="option"><input type="radio" name="mobility" value="Unable to stand or walk"><span>Unable to stand / walk</span></label></div></fieldset>
+            <fieldset class="question"><legend>4. Surgical site (only if visible and your vet asked you to monitor it)</legend><div class="option-grid"><label class="option"><input type="radio" name="incision" value="No new change noticed" required><span>No new change noticed</span></label><label class="option"><input type="radio" name="incision" value="More red or swollen"><span>More red / swollen</span></label><label class="option"><input type="radio" name="incision" value="Open, bleeding or discharge"><span>Open / bleeding / discharge</span></label></div></fieldset>
+            <fieldset class="question"><legend>5. Medication according to today's plan</legend><div class="option-grid"><label class="option"><input type="radio" name="medication" value="Given as scheduled" required><span>Given as scheduled</span></label><label class="option"><input type="radio" name="medication" value="Not due yet"><span>Not due yet</span></label><label class="option"><input type="radio" name="medication" value="Missed or unsure"><span>Missed / unsure</span></label></div></fieldset>
+            <fieldset class="question"><legend>6. Any urgent warning signs right now?</legend><p class="muted" style="font-size:.8rem;margin-top:-4px">Select all that apply. If one is present, seek urgent veterinary guidance instead of waiting for this form.</p><div class="check-grid"><label class="check-option"><input name="redFlags" type="checkbox" value="Difficulty breathing"><span>Difficulty breathing</span></label><label class="check-option"><input name="redFlags" type="checkbox" value="Collapse or extreme weakness"><span>Collapse or extreme weakness</span></label><label class="check-option"><input name="redFlags" type="checkbox" value="Uncontrolled bleeding"><span>Uncontrolled bleeding</span></label><label class="check-option"><input name="redFlags" type="checkbox" value="Repeated vomiting"><span>Repeated vomiting</span></label><label class="check-option"><input name="redFlags" type="checkbox" value="Pale, blue or grey gums"><span>Pale, blue or grey gums</span></label></div></fieldset>
+            <div class="field"><label for="checkin-notes">Anything else you noticed? (optional)</label><textarea id="checkin-notes" name="notes" maxlength="1200" placeholder="Changes since the last check-in, questions for the vet, or what seems different..."></textarea></div>
+            <div class="form-actions"><span class="muted" style="font-size:.76rem">Saved to this browser only.</span><button class="btn" type="submit">Save check-in <span aria-hidden="true">→</span></button></div>
+          </form>
+          <div class="stack"><div class="care-reminder-card"><img class="decorative-photo" src="https://images.unsplash.com/photo-1770836037289-e00e5f351d11?auto=format&amp;fit=crop&amp;w=850&amp;q=82" alt="A veterinarian examining a dog" loading="lazy"><div class="care-reminder-overlay"><span class="eyebrow">YOU KNOW YOUR PET BEST</span><h3>Trust what you notice.</h3><p>A change is worth a question, even when a photo looks ordinary.</p></div></div><div class="panel"><h3>When to call</h3><p class="muted" style="font-size:.84rem">Follow the clinic's discharge instructions. Get urgent help for difficulty breathing, collapse, uncontrolled bleeding, or other severe / sudden changes.</p><div class="note note-danger"><strong>Do not wait for an AI result.</strong><br>Photo analysis is experimental and cannot rule out a problem.</div><p class="footnote">General references: <a href="https://www.aaha.org/resources/help-is-this-a-pet-emergency/" target="_blank" rel="noopener noreferrer">AAHA emergency signs</a> · <a href="https://vcahospitals.com/veterinary-care/primary/know-your-pet/post-operative-instructions-in-dogs" target="_blank" rel="noopener noreferrer">VCA post-op guidance</a>. Follow your own clinic’s discharge instructions.</p><div style="margin-top:14px"><button class="btn btn-secondary" type="button" data-route="care" style="width:100%">View care contacts</button></div></div><div class="panel"><h3>Why we ask</h3><p class="muted" style="font-size:.84rem;margin-bottom:0">A brief dated record can help you describe changes to your veterinary team. It is not a medical assessment and does not replace an exam.</p></div></div>
+        </div>
+      </section>
+
+      <section id="page-photos" class="page" aria-labelledby="photos-title">
+        <div class="mobile-brand"><span class="brand-mark" aria-hidden="true">🐾</span> PetTot</div>
+        <section class="editorial-banner photos-banner" aria-labelledby="photos-title">
+          <img class="decorative-photo" src="https://images.unsplash.com/photo-1770836037289-e00e5f351d11?auto=format&amp;fit=crop&amp;w=1800&amp;q=82" alt="" loading="eager">
+          <div class="editorial-shade"></div>
+          <div class="editorial-content">
+            <div class="editorial-kicker">OPTIONAL MODEL-ASSISTED REVIEW</div>
+            <h1 id="photos-title">A photo is a note, not a verdict.</h1>
+            <p>Look for changes over time, keep the camera steady, and use the result as context for a conversation with your vet — never as a diagnosis.</p>
+          </div>
+          <div class="editorial-action"><span class="action-spark" aria-hidden="true">✳</span><span class="action-copy"><strong>Image review</strong><small>Experimental tools</small></span><button class="light-cta" type="button" data-action="scroll-analysis">Choose photos <span aria-hidden="true">↓</span></button></div>
+        </section>
+        <div class="photo-process" aria-label="Photo guidance">
+          <div class="process-step"><span class="process-number">01</span><div><strong>Good light</strong><p>Choose a clear, well-lit image.</p></div></div>
+          <div class="process-step"><span class="process-number">02</span><div><strong>Similar angle</strong><p>Keep framing and distance consistent.</p></div></div>
+          <div class="process-step"><span class="process-number">03</span><div><strong>Vet-led next step</strong><p>Use any flag as a reason to ask, not a diagnosis.</p></div></div>
+        </div>
+        <div class="panel"><div class="panel-head"><div><h3>Connect to the PetTot API</h3><p>Run the FastAPI backend locally before submitting photos.</p></div><span id="api-state-pill" class="pill">Not checked</span></div><form id="api-form" class="api-tools"><div class="field"><label for="api-base">API base URL</label><input id="api-base" name="apiBase" type="url" value="http://127.0.0.1:8000" required placeholder="http://127.0.0.1:8000"><small>Photo files are uploaded to this address when you run an analysis.</small></div><button class="btn btn-secondary" type="submit">Save address</button><button class="btn" id="check-api-button" type="button" data-action="check-api">Check connection</button></form><div id="api-status" class="note" style="margin-top:14px">Not connected yet. This does not block check-ins or medication logging.</div></div>
+        <div id="analysis-tools" class="upload-grid section-space">
+          <div class="panel"><div class="panel-head"><div><h3>Facial-feature analysis</h3><p>Upload a clear, front-facing face photo.</p></div><span class="pill">Experimental</span></div><form id="face-form"><div class="upload-box"><label class="field"><span class="field-label">Pet face photo</span><input type="file" id="face-file" name="file" accept="image/*" required></label><img id="face-preview" class="preview hidden" alt="Selected pet face preview"><p style="margin:13px 0 0">The current API returns four heuristic action-unit scores (0–8 total). This is not a validated general-purpose pain scale for dogs and cats.</p></div><button class="btn" style="width:100%;margin-top:13px" type="submit">Analyze face photo</button></form><div id="face-result" aria-live="polite"></div></div>
+          <div class="panel"><div class="panel-head"><div><h3>Incision photo comparison</h3><p>Provide the baseline image and the current image.</p></div><span class="pill">Experimental</span></div><form id="wound-form"><div class="upload-box"><label class="field"><span class="field-label">Baseline photo (Day 1)</span><input type="file" id="wound-base-file" name="day1_file" accept="image/*" required></label><img id="wound-base-preview" class="preview hidden" alt="Selected baseline incision preview"></div><div class="upload-box" style="margin-top:12px"><label class="field"><span class="field-label">Current photo</span><input type="file" id="wound-current-file" name="dayN_file" accept="image/*" required></label><img id="wound-current-preview" class="preview hidden" alt="Selected current incision preview"></div><p class="footnote">Lighting, camera angle and framing can affect image comparisons. Do not delay contacting your vet if the incision is opening, bleeding or looks concerning.</p><button class="btn" style="width:100%;margin-top:8px" type="submit">Compare incision photos</button></form><div id="wound-result" aria-live="polite"></div></div>
+        </div>
+        <div class="note note-warn section-space"><strong>Important limitation</strong><br>A model result is only one piece of information. A green result does not rule out pain, infection or another complication. No photos or results are automatically sent to a veterinary team by this prototype.</div>
+      </section>
+
+      <section id="page-care" class="page" aria-labelledby="care-title">
+        <div class="mobile-brand"><span class="brand-mark" aria-hidden="true">🐾</span> PetTot</div>
+
+        <div class="care-photo-banner"><img class="decorative-photo" src="https://images.unsplash.com/photo-1770836037289-e00e5f351d11?auto=format&amp;fit=crop&amp;w=1400&amp;q=85" alt="A veterinarian gently examining a dog" loading="lazy"><div class="care-banner-shade"></div><div class="care-banner-copy"><span class="eyebrow">CARE IS A TEAM EFFORT</span><h1 id="care-title">Your vet knows the medical plan.<br>You know your pet.</h1><p>Bring the two together with clear notes and questions.</p></div><button type="button" class="care-banner-badge" data-action="focus-summary"><span>✳</span><strong>Prepare a vet update</strong><span class="badge-arrow" aria-hidden="true">↗</span></button></div>
+        <div class="care-layout">
+          <div class="panel"><div class="panel-head"><div><h3>Your clinic details</h3><p>Entered by you during setup and stored locally.</p></div></div><div id="care-contact-details"></div><div class="hero-actions"><a class="btn" id="call-clinic" href="#" aria-disabled="true">Call clinic</a><a class="btn btn-secondary" id="email-clinic" href="#" aria-disabled="true">Email clinic</a><a class="btn btn-secondary" href="https://www.google.com/maps/search/?api=1&query=24-hour+emergency+veterinary+hospital+near+me" target="_blank" rel="noopener noreferrer">Find an emergency vet ↗</a></div><p class="footnote">PetTot does not know your location or verify the availability of nearby clinics. Confirm the destination and opening status before travelling when possible.</p></div>
+          <div class="panel"><div class="panel-head"><div><h3>Prepare a vet update</h3><p>Review the text, then copy it or open your own email draft.</p></div></div><textarea id="vet-summary" class="summary-output" readonly aria-label="Vet update summary"></textarea><div class="hero-actions"><button class="btn" type="button" data-action="copy-summary">Copy summary</button><button class="btn btn-secondary" type="button" data-action="email-summary">Open email draft</button></div><div id="summary-status" class="footnote">Not sent. You control whether and where to share this summary.</div></div>
+        </div>
+        <div class="panel section-space"><div class="panel-head"><div><h3>What this prototype can and can't do</h3><p>Use these boundaries to avoid mistaking a demo for a clinical service.</p></div></div><div class="check-grid"><div class="note"><strong>It can now</strong><br>Store a pet profile, check-ins and medication ticks in this browser; call the two image-analysis endpoints if the API is running; prepare a summary for you to share.</div><div class="note note-warn"><strong>It cannot yet</strong><br>Create a secure account, sync across devices, send medication reminders, message a veterinary team, persist records on a server, or notify a vet automatically.</div></div></div>
+      </section>
+
+      <div class="page"><p class="footnote">PetTot is a prototype for recovery tracking and veterinary communication support. It is not an emergency service and does not provide a diagnosis.</p></div>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
 </html>
