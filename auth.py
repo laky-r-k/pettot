@@ -1,24 +1,39 @@
-from passlib.context import CryptContext
+import os
+from typing import Dict, Any
+from dotenv import load_dotenv
+from fastapi import HTTPException, status
+import firebase_admin
+from firebase_admin import auth as fb_auth, credentials
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+load_dotenv()
 
-def hash_password(password: str) -> str:
-    return pwd_context.hash(password)
+CREDENTIALS_PATH = os.getenv("FIREBASE_CREDENTIALS_PATH", "./firebase-credentials.json")
 
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password, hashed_password)
+# Initialize Firebase Admin app singleton
+if not firebase_admin._apps:
+    cred = credentials.Certificate(CREDENTIALS_PATH)
+    firebase_admin.initialize_app(cred)
 
 
-
-import jwt
-from datetime import datetime, timedelta, timezone
-
-SECRET_KEY = "change-me-we-will-move-this-to-env-in-module-7"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
-
-def create_access_token(data: dict) -> str:
-    to_encode = data.copy()
-    expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    to_encode["exp"] = expire
-    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+def verify_firebase_token(token: str) -> Dict[str, Any]:
+    """
+    Verifies a Firebase ID token sent from client applications (React Web / React Native).
+    Returns the decoded token claims dictionary containing:
+    - 'uid': The unique Firebase user ID
+    - 'email': The user's email address
+    """
+    try:
+        decoded_token = fb_auth.verify_id_token(token)
+        return decoded_token
+    except fb_auth.ExpiredIdTokenError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Firebase authentication token has expired",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    except (fb_auth.InvalidIdTokenError, Exception):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid Firebase authentication token",
+            headers={"WWW-Authenticate": "Bearer"},
+        )

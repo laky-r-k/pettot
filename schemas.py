@@ -26,14 +26,14 @@ from typing import Literal
 class UserCreate(BaseModel):
     name: str
     username: str
-    email: str
-    password: str
+    email: str | None = None
     role: Literal["owner", "doctor"]
     license_number: str | None = None
 
 
 class UserResponse(BaseModel):
     id: int
+    firebase_uid: str
     username: str
     name: str
     email: str
