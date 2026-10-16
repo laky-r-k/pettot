@@ -54,3 +54,10 @@ firebase-credentials.json
 *firebase*.json
 *serviceAccountKey*.json
 
+# Node & Frontend
+node_modules/
+frontend/node_modules/
+.expo/
+frontend/.expo/
+web-build/
+
