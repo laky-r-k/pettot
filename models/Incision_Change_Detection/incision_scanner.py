@@ -2,7 +2,6 @@
 Incision Scanner Pipeline Coordinator
 Tracks surgical site healing day-over-day, identifying SSI, erythema delta, and dehiscence.
 """
-
 import cv2
 import base64
 import numpy as np
