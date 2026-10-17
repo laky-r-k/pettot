@@ -14,6 +14,8 @@ import {
 } from "react-native";
 import { useAuth } from "../context/AuthContext";
 import { api } from "../api/client";
+import UploadStatusUpdateModal from "../components/UploadStatusUpdateModal";
+import StatusUpdatesTimelineModal from "../components/StatusUpdatesTimelineModal";
 
 export default function OwnerDashboard() {
   const { userProfile, logout, getIdToken } = useAuth();
@@ -21,6 +23,10 @@ export default function OwnerDashboard() {
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [subModalVisible, setSubModalVisible] = useState(false);
+
+  // Status Update & Timeline State
+  const [selectedPetForUpload, setSelectedPetForUpload] = useState(null);
+  const [selectedPetForTimeline, setSelectedPetForTimeline] = useState(null);
 
   // New Pet Form State
   const [name, setName] = useState("");
@@ -167,23 +173,42 @@ export default function OwnerDashboard() {
             contentContainerStyle={{ paddingBottom: 40 }}
             renderItem={({ item }) => (
               <View style={styles.petCard}>
-                <View style={styles.petInfo}>
-                  <Text style={styles.petName}>
-                    {item.name} {item.species === "Cat" ? "🐱" : "🐶"}
-                  </Text>
-                  <Text style={styles.petMeta}>
-                    Species: <Text style={styles.metaVal}>{item.species}</Text> • Age: <Text style={styles.metaVal}>{item.age} yrs</Text>
-                  </Text>
-                  {item.is_adopted ? (
-                    <Text style={styles.adoptedBadge}>❤️ Rescued / Adopted</Text>
-                  ) : null}
+                <View style={styles.petTopRow}>
+                  <View style={styles.petInfo}>
+                    <Text style={styles.petName}>
+                      {item.name} {item.species === "Cat" ? "🐱" : "🐶"}
+                    </Text>
+                    <Text style={styles.petMeta}>
+                      Species: <Text style={styles.metaVal}>{item.species}</Text> • Age: <Text style={styles.metaVal}>{item.age} yrs</Text>
+                    </Text>
+                    {item.is_adopted ? (
+                      <Text style={styles.adoptedBadge}>❤️ Rescued / Adopted</Text>
+                    ) : null}
+                  </View>
+                  <TouchableOpacity
+                    style={styles.deleteBtn}
+                    onPress={() => handleDeletePet(item.id)}
+                  >
+                    <Text style={styles.deleteBtnText}>Remove</Text>
+                  </TouchableOpacity>
                 </View>
-                <TouchableOpacity
-                  style={styles.deleteBtn}
-                  onPress={() => handleDeletePet(item.id)}
-                >
-                  <Text style={styles.deleteBtnText}>Remove</Text>
-                </TouchableOpacity>
+
+                {/* Daily Recovery Actions */}
+                <View style={styles.recoveryActionsRow}>
+                  <TouchableOpacity
+                    style={styles.checkInBtn}
+                    onPress={() => setSelectedPetForUpload(item)}
+                  >
+                    <Text style={styles.checkInBtnText}>📸 + Daily Check-In</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={styles.historyBtn}
+                    onPress={() => setSelectedPetForTimeline(item)}
+                  >
+                    <Text style={styles.historyBtnText}>📜 Recovery Timeline</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             )}
           />
@@ -303,6 +328,25 @@ export default function OwnerDashboard() {
           </View>
         </View>
       </Modal>
+
+      {/* Modal: Upload Daily Status Update */}
+      {selectedPetForUpload ? (
+        <UploadStatusUpdateModal
+          visible={!!selectedPetForUpload}
+          pet={selectedPetForUpload}
+          onClose={() => setSelectedPetForUpload(null)}
+          onSuccess={() => {}}
+        />
+      ) : null}
+
+      {/* Modal: Status Updates Timeline */}
+      {selectedPetForTimeline ? (
+        <StatusUpdatesTimelineModal
+          visible={!!selectedPetForTimeline}
+          pet={selectedPetForTimeline}
+          onClose={() => setSelectedPetForTimeline(null)}
+        />
+      ) : null}
     </View>
   );
 }
@@ -410,12 +454,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#161e2e",
     borderRadius: 14,
     padding: 18,
-    marginBottom: 12,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    marginBottom: 14,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.06)",
+  },
+  petTopRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
   },
   petInfo: {
     flex: 1,
@@ -450,6 +496,40 @@ const styles = StyleSheet.create({
     color: "#f87171",
     fontSize: 12,
     fontWeight: "600",
+  },
+  recoveryActionsRow: {
+    flexDirection: "row",
+    gap: 10,
+    marginTop: 14,
+    borderTopWidth: 1,
+    borderTopColor: "rgba(255, 255, 255, 0.05)",
+    paddingTop: 12,
+  },
+  checkInBtn: {
+    backgroundColor: "rgba(37, 99, 235, 0.15)",
+    borderWidth: 1,
+    borderColor: "#3b82f6",
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+  },
+  checkInBtnText: {
+    color: "#60a5fa",
+    fontSize: 13,
+    fontWeight: "600",
+  },
+  historyBtn: {
+    backgroundColor: "rgba(255, 255, 255, 0.04)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.1)",
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+  },
+  historyBtnText: {
+    color: "#e5e7eb",
+    fontSize: 13,
+    fontWeight: "500",
   },
   modalOverlay: {
     flex: 1,
