@@ -17,7 +17,7 @@ from models import Pet, User, Subscription, StatusUpdate, MediaFile
 from schemas import (
     PetCreate, PetResponse,
     UserCreate, UserResponse,
-    SubscriptionCreate, SubscriptionResponse,
+    SubscriptionCreate, SubscriptionResponse, OwnerDoctorSubscriptionResponse,
     StatusUpdateResponse, MediaFileResponse,
 )
 
@@ -276,11 +276,63 @@ def create_subscription(
     if not doctor or doctor.role != "doctor":
         raise HTTPException(status_code=400, detail="doctor_id must belong to a user with role 'doctor'")
 
+    # Prevent duplicate subscription to the same doctor
+    existing_sub = db.query(Subscription).filter(
+        Subscription.owner_id == owner.id,
+        Subscription.doctor_id == doctor.id,
+    ).first()
+    if existing_sub:
+        raise HTTPException(
+            status_code=400,
+            detail=f"You are already subscribed to Dr. {doctor.name}."
+        )
+
     db_sub = Subscription(owner_id=owner.id, doctor_id=doctor.id)
     db.add(db_sub)
     db.commit()
     db.refresh(db_sub)
     return db_sub
+
+
+@app.get("/subscriptions/me/", response_model=list[OwnerDoctorSubscriptionResponse], tags=["Subscriptions"])
+def list_my_doctors(
+    owner: User = Depends(require_role("owner")),
+    db: Session = Depends(get_db),
+):
+    """Lists all veterinarians the authenticated pet owner is currently linked with."""
+    subs = db.query(Subscription).filter(Subscription.owner_id == owner.id).all()
+    results = []
+    for s in subs:
+        doc = s.doctor
+        results.append({
+            "subscription_id": s.id,
+            "doctor_id": doc.id,
+            "doctor_name": doc.name,
+            "doctor_email": doc.email,
+            "doctor_username": doc.username,
+            "license_number": doc.license_number,
+            "created_at": s.created_at or s.id,
+        })
+    return results
+
+
+@app.delete("/subscriptions/{subscription_id}", tags=["Subscriptions"])
+def delete_subscription(
+    subscription_id: int,
+    owner: User = Depends(require_role("owner")),
+    db: Session = Depends(get_db),
+):
+    """Allows an owner to unsubscribe / unlink from a veterinarian."""
+    sub = db.query(Subscription).filter(
+        Subscription.id == subscription_id,
+        Subscription.owner_id == owner.id,
+    ).first()
+    if not sub:
+        raise HTTPException(status_code=404, detail="Subscription not found")
+
+    db.delete(sub)
+    db.commit()
+    return {"message": "Successfully unsubscribed from veterinarian"}
 
 
 @app.get("/doctors/me/subscriptions/", tags=["Subscriptions"])
