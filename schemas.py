@@ -51,6 +51,20 @@ class SubscriptionResponse(BaseModel):
     id: int
     owner_id: int
     doctor_id: int
+    created_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
+
+class OwnerDoctorSubscriptionResponse(BaseModel):
+    subscription_id: int
+    doctor_id: int
+    doctor_name: str
+    doctor_email: str
+    doctor_username: str
+    license_number: Optional[str] = None
+    created_at: datetime
 
     class Config:
         from_attributes = True

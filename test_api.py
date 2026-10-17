@@ -268,11 +268,89 @@ def test_daily_status_updates_and_secure_media():
     print("✅ Background worker hook GET /status-updates/pending/ returned unanalyzed queue")
 
 
+def test_multi_doctor_subscriptions_and_duplicate_prevention():
+    """
+    Verifies Option B:
+    1. Duplicate subscription to the same doctor is prevented with 400 Bad Request
+    2. Owner can subscribe to multiple distinct doctors (e.g. general vet + specialist)
+    3. GET /subscriptions/me/ lists all subscribed veterinarians with doctor profile details
+    4. Owner can unsubscribe via DELETE /subscriptions/{id}
+    5. Unsubscribed doctor immediately loses access to the owner's pet profiles (403)
+    """
+    global CURRENT_MOCK_CLAIMS
+    app.dependency_overrides[get_firebase_user_claims] = override_firebase_claims
+
+    # 1. Register a second doctor (Dr. Sarah, Surgical Specialist)
+    CURRENT_MOCK_CLAIMS = {"uid": "firebase_doctor_003", "email": "dr_sarah@example.com"}
+    res_doc2 = client.post("/users/", json={
+        "name": "Dr. Sarah",
+        "username": "dr_sarah",
+        "role": "doctor",
+        "license_number": "SURG-9999"
+    }, headers={"Authorization": "Bearer mock_token"})
+    assert res_doc2.status_code == 200
+    doc2_id = res_doc2.json()["id"]
+
+    # 2. Switch back to Owner
+    CURRENT_MOCK_CLAIMS = {"uid": "firebase_owner_001", "email": "alice_owner@example.com"}
+
+    # Doctor 1 (Dr. Bob) has ID=2 (from test_user_onboarding_and_rbac_flow)
+    # Attempt duplicate subscription to Doctor 1
+    res_dup = client.post("/subscriptions/", json={"doctor_id": 2}, headers={"Authorization": "Bearer mock_token"})
+    assert res_dup.status_code == 400
+    assert "already subscribed" in res_dup.json()["detail"].lower()
+    print("✅ Duplicate subscription to same doctor blocked with 400 Bad Request")
+
+    # 3. Subscribe to Doctor 2 (Dr. Sarah) - Multi-doctor allowed!
+    res_sub2 = client.post("/subscriptions/", json={"doctor_id": doc2_id}, headers={"Authorization": "Bearer mock_token"})
+    assert res_sub2.status_code == 200
+    sub2_id = res_sub2.json()["id"]
+    print(f"✅ Subscribed to second specialist doctor (ID={doc2_id}) successfully")
+
+    # 4. Check GET /subscriptions/me/ lists both veterinarians
+    res_my_docs = client.get("/subscriptions/me/", headers={"Authorization": "Bearer mock_token"})
+    assert res_my_docs.status_code == 200
+    doc_list = res_my_docs.json()
+    assert len(doc_list) == 2
+    assert any(d["doctor_name"] == "Dr. Bob" for d in doc_list)
+    assert any(d["doctor_name"] == "Dr. Sarah" for d in doc_list)
+    print("✅ GET /subscriptions/me/ returned all linked veterinarians for pet owner")
+
+    # 5. Doctor 2 accesses pet
+    pets = client.get("/pets/", headers={"Authorization": "Bearer mock_token"}).json()
+    pet_id = pets[0]["id"]
+
+    CURRENT_MOCK_CLAIMS = {"uid": "firebase_doctor_003", "email": "dr_sarah@example.com"}
+    res_doc2_view = client.get(f"/pets/{pet_id}", headers={"Authorization": "Bearer mock_token"})
+    assert res_doc2_view.status_code == 200
+    print("✅ Doctor 2 granted access to pet via active subscription")
+
+    # 6. Owner unsubscribes from Doctor 2
+    CURRENT_MOCK_CLAIMS = {"uid": "firebase_owner_001", "email": "alice_owner@example.com"}
+    res_del_sub = client.delete(f"/subscriptions/{sub2_id}", headers={"Authorization": "Bearer mock_token"})
+    assert res_del_sub.status_code == 200
+    print("✅ Owner successfully unsubscribed from Doctor 2")
+
+    # 7. Doctor 2 attempts to view pet again -> BLOCKED with 403 Forbidden!
+    CURRENT_MOCK_CLAIMS = {"uid": "firebase_doctor_003", "email": "dr_sarah@example.com"}
+    res_doc2_blocked = client.get(f"/pets/{pet_id}", headers={"Authorization": "Bearer mock_token"})
+    assert res_doc2_blocked.status_code == 403
+    print("✅ Unsubscribed doctor immediately lost access to pet (403 Forbidden)")
+
+    # 8. Check GET /subscriptions/me/ now only has Doctor 1
+    CURRENT_MOCK_CLAIMS = {"uid": "firebase_owner_001", "email": "alice_owner@example.com"}
+    res_my_docs_after = client.get("/subscriptions/me/", headers={"Authorization": "Bearer mock_token"})
+    assert res_my_docs_after.status_code == 200
+    assert len(res_my_docs_after.json()) == 1
+    print("✅ GET /subscriptions/me/ reflects updated single subscription")
+
+
 if __name__ == "__main__":
-    print("\n--- Running PetTot Verification Suite (Auth, RBAC, Status Updates & Secure Media) ---\n")
+    print("\n--- Running PetTot Verification Suite (Auth, RBAC, Media & Subscriptions) ---\n")
     test_health()
     test_unauthenticated_request_rejected()
     test_invalid_token_rejected()
     test_user_onboarding_and_rbac_flow()
     test_daily_status_updates_and_secure_media()
-    print("\n🎉 ALL 18 VERIFICATION CHECKS PASSED SUCCESSFULLY!\n")
+    test_multi_doctor_subscriptions_and_duplicate_prevention()
+    print("\n🎉 ALL 24 VERIFICATION CHECKS PASSED SUCCESSFULLY!\n")

@@ -24,6 +24,10 @@ export default function OwnerDashboard() {
   const [modalVisible, setModalVisible] = useState(false);
   const [subModalVisible, setSubModalVisible] = useState(false);
 
+  // Linked Doctors State (Option B: Multi-Doctor support)
+  const [myDoctors, setMyDoctors] = useState([]);
+  const [loadingDoctors, setLoadingDoctors] = useState(false);
+
   // Status Update & Timeline State
   const [selectedPetForUpload, setSelectedPetForUpload] = useState(null);
   const [selectedPetForTimeline, setSelectedPetForTimeline] = useState(null);
@@ -52,8 +56,22 @@ export default function OwnerDashboard() {
     }
   }
 
+  async function loadMyDoctors() {
+    setLoadingDoctors(true);
+    try {
+      const token = await getIdToken();
+      const data = await api.get("/subscriptions/me/", token);
+      setMyDoctors(data || []);
+    } catch (err) {
+      console.error("Failed to load linked doctors:", err);
+    } finally {
+      setLoadingDoctors(false);
+    }
+  }
+
   useEffect(() => {
     loadPets();
+    loadMyDoctors();
   }, []);
 
   async function handleAddPet() {
@@ -94,23 +112,43 @@ export default function OwnerDashboard() {
   }
 
   async function handleSubscribeDoctor() {
-    if (!doctorId.trim()) {
-      alertMsg("Validation Error", "Please enter a Doctor ID.");
+    const docIdNum = parseInt(doctorId.trim(), 10);
+    if (!docIdNum) {
+      alertMsg("Validation Error", "Please enter a valid numeric Doctor ID.");
       return;
     }
+
+    // Client-side duplicate check
+    if (myDoctors.some((d) => d.doctor_id === docIdNum)) {
+      alertMsg("Already Subscribed", "You are already linked with this veterinarian.");
+      return;
+    }
+
     setSubscribing(true);
     try {
       const token = await getIdToken();
       await api.post("/subscriptions/", {
-        doctor_id: parseInt(doctorId.trim(), 10),
+        doctor_id: docIdNum,
       }, token);
       setDoctorId("");
       setSubModalVisible(false);
-      alertMsg("Subscribed!", "Successfully shared your pet records with the doctor.");
+      await loadMyDoctors();
+      alertMsg("Subscribed!", "Successfully shared your pet medical records with the veterinarian.");
     } catch (err) {
       alertMsg("Subscription Error", err.message || "Could not subscribe to doctor.");
     } finally {
       setSubscribing(false);
+    }
+  }
+
+  async function handleUnsubscribe(subscriptionId, doctorName) {
+    try {
+      const token = await getIdToken();
+      await api.delete(`/subscriptions/${subscriptionId}`, token);
+      await loadMyDoctors();
+      alertMsg("Unsubscribed", `Successfully unlinked from ${doctorName}.`);
+    } catch (err) {
+      alertMsg("Error", err.message || "Failed to unsubscribe.");
     }
   }
 
@@ -152,9 +190,49 @@ export default function OwnerDashboard() {
         </TouchableOpacity>
       </View>
 
-      {/* Pet List */}
+      {/* Main Content Area */}
       <View style={styles.listContainer}>
-        <Text style={styles.sectionTitle}>My Registered Pets ({pets.length})</Text>
+        {/* Linked Doctors Section */}
+        <View style={styles.doctorsSection}>
+          <View style={styles.sectionHeaderRow}>
+            <Text style={styles.sectionTitle}>
+              🩺 Linked Veterinarians ({myDoctors.length})
+            </Text>
+            {loadingDoctors ? <ActivityIndicator size="small" color="#60a5fa" /> : null}
+          </View>
+
+          {myDoctors.length === 0 ? (
+            <View style={styles.noDoctorsCard}>
+              <Text style={styles.noDoctorsText}>
+                No veterinarian linked yet. Tap "+ Link with Doctor" to allow your vet to review daily recovery photos and videos.
+              </Text>
+            </View>
+          ) : (
+            <View style={styles.doctorGrid}>
+              {myDoctors.map((doc) => (
+                <View key={doc.subscription_id} style={styles.doctorBadgeCard}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.doctorBadgeName}>Dr. {doc.doctor_name}</Text>
+                    <Text style={styles.doctorBadgeMeta}>
+                      License: {doc.license_number || "Verified Vet"} • ID #{doc.doctor_id}
+                    </Text>
+                  </View>
+                  <TouchableOpacity
+                    style={styles.unlinkBtn}
+                    onPress={() => handleUnsubscribe(doc.subscription_id, doc.doctor_name)}
+                  >
+                    <Text style={styles.unlinkBtnText}>Unlink</Text>
+                  </TouchableOpacity>
+                </View>
+              ))}
+            </View>
+          )}
+        </View>
+
+        {/* Pet List Section */}
+        <Text style={[styles.sectionTitle, { marginTop: 20 }]}>
+          My Registered Pets ({pets.length})
+        </Text>
 
         {loading ? (
           <ActivityIndicator color="#60a5fa" size="large" style={{ marginTop: 40 }} />
@@ -293,7 +371,7 @@ export default function OwnerDashboard() {
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Link Veterinary Doctor 🩺</Text>
             <Text style={styles.modalSubtitle}>
-              Give your licensed veterinarian access to view your pets for clinical monitoring.
+              Give your licensed veterinarian access to view your pets for clinical monitoring. You can link multiple specialist veterinarians.
             </Text>
 
             <Text style={styles.inputLabel}>Doctor ID</Text>
@@ -425,7 +503,65 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "600",
     color: "#e5e7eb",
-    marginBottom: 14,
+    marginBottom: 10,
+  },
+  sectionHeaderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  doctorsSection: {
+    backgroundColor: "rgba(255, 255, 255, 0.02)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.06)",
+    borderRadius: 14,
+    padding: 16,
+    marginBottom: 6,
+  },
+  noDoctorsCard: {
+    paddingVertical: 10,
+  },
+  noDoctorsText: {
+    fontSize: 13,
+    color: "#9ca3af",
+    lineHeight: 18,
+  },
+  doctorGrid: {
+    gap: 10,
+    marginTop: 6,
+  },
+  doctorBadgeCard: {
+    backgroundColor: "rgba(59, 130, 246, 0.08)",
+    borderWidth: 1,
+    borderColor: "rgba(59, 130, 246, 0.25)",
+    borderRadius: 10,
+    padding: 12,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  doctorBadgeName: {
+    color: "#fff",
+    fontSize: 15,
+    fontWeight: "bold",
+  },
+  doctorBadgeMeta: {
+    color: "#9ca3af",
+    fontSize: 12,
+    marginTop: 2,
+  },
+  unlinkBtn: {
+    backgroundColor: "rgba(239, 68, 68, 0.15)",
+    borderWidth: 1,
+    borderColor: "rgba(239, 68, 68, 0.3)",
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+  },
+  unlinkBtnText: {
+    color: "#f87171",
+    fontSize: 12,
+    fontWeight: "600",
   },
   emptyCard: {
     backgroundColor: "#161e2e",
