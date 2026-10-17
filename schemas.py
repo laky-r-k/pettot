@@ -1,3 +1,5 @@
+from datetime import datetime, date
+from typing import Literal, Optional
 from pydantic import BaseModel
 
 
@@ -6,7 +8,6 @@ class PetCreate(BaseModel):
     species: str
     age: int
     is_adopted: bool = False
-    # owner_id removed: it now comes from the logged-in user
 
 
 class PetResponse(BaseModel):
@@ -20,8 +21,6 @@ class PetResponse(BaseModel):
     class Config:
         from_attributes = True
 
-
-from typing import Literal
 
 class UserCreate(BaseModel):
     name: str
@@ -46,18 +45,55 @@ class UserResponse(BaseModel):
 
 class SubscriptionCreate(BaseModel):
     doctor_id: int
-    # owner_id removed: the logged-in owner is the one subscribing
 
 
 class SubscriptionResponse(BaseModel):
     id: int
     owner_id: int
     doctor_id: int
+    created_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
 
 
-class Token(BaseModel):
-    access_token: str
-    token_type: str
+class OwnerDoctorSubscriptionResponse(BaseModel):
+    subscription_id: int
+    doctor_id: int
+    doctor_name: str
+    doctor_email: str
+    doctor_username: str
+    license_number: Optional[str] = None
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class MediaFileResponse(BaseModel):
+    id: int
+    status_update_id: int
+    media_type: str
+    original_filename: str
+    content_type: str
+    file_size_bytes: Optional[int] = None
+    duration_seconds: Optional[float] = None
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class StatusUpdateResponse(BaseModel):
+    id: int
+    pet_id: int
+    day_number: int
+    update_date: date
+    notes: Optional[str] = None
+    processing_status: str
+    analysis_results: Optional[str] = None
+    created_at: datetime
+    media_files: list[MediaFileResponse] = []
+
+    class Config:
+        from_attributes = True

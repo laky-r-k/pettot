@@ -10,11 +10,13 @@ import {
 } from "react-native";
 import { useAuth } from "../context/AuthContext";
 import { api } from "../api/client";
+import StatusUpdatesTimelineModal from "../components/StatusUpdatesTimelineModal";
 
 export default function DoctorDashboard() {
   const { userProfile, logout, getIdToken } = useAuth();
   const [subscriptions, setSubscriptions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedPetForTimeline, setSelectedPetForTimeline] = useState(null);
 
   async function loadSubscriptions() {
     setLoading(true);
@@ -85,13 +87,13 @@ export default function DoctorDashboard() {
                 </View>
 
                 <Text style={styles.petsHeader}>
-                  Registered Pets ({item.pets?.length || 0}):
+                  Registered Patient Pets ({item.pets?.length || 0}):
                 </Text>
 
                 {item.pets && item.pets.length > 0 ? (
                   item.pets.map((pet) => (
                     <View key={pet.id} style={styles.patientRow}>
-                      <View>
+                      <View style={{ flex: 1 }}>
                         <Text style={styles.petName}>
                           {pet.species === "Cat" ? "🐱" : "🐶"} {pet.name}
                         </Text>
@@ -99,9 +101,12 @@ export default function DoctorDashboard() {
                           Species: {pet.species} • Age: {pet.age} yrs
                         </Text>
                       </View>
-                      {pet.is_adopted ? (
-                        <Text style={styles.adoptedTag}>Adopted</Text>
-                      ) : null}
+                      <TouchableOpacity
+                        style={styles.viewTimelineBtn}
+                        onPress={() => setSelectedPetForTimeline(pet)}
+                      >
+                        <Text style={styles.viewTimelineBtnText}>📜 View Timeline</Text>
+                      </TouchableOpacity>
                     </View>
                   ))
                 ) : (
@@ -112,6 +117,15 @@ export default function DoctorDashboard() {
           />
         )}
       </View>
+
+      {/* Recovery Timeline Viewer Modal */}
+      {selectedPetForTimeline ? (
+        <StatusUpdatesTimelineModal
+          visible={!!selectedPetForTimeline}
+          pet={selectedPetForTimeline}
+          onClose={() => setSelectedPetForTimeline(null)}
+        />
+      ) : null}
     </View>
   );
 }
@@ -264,13 +278,17 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: "#9ca3af",
   },
-  adoptedTag: {
-    backgroundColor: "rgba(16, 185, 129, 0.15)",
-    color: "#34d399",
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    borderRadius: 6,
-    fontSize: 11,
+  viewTimelineBtn: {
+    backgroundColor: "rgba(59, 130, 246, 0.15)",
+    borderWidth: 1,
+    borderColor: "#3b82f6",
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+  },
+  viewTimelineBtnText: {
+    color: "#60a5fa",
+    fontSize: 12,
     fontWeight: "600",
   },
   noPetsText: {

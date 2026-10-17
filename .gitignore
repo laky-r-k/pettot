@@ -48,6 +48,7 @@ venv.bak/
 # Temporary outputs & sample test artifacts
 sample_pet_face.jpg
 extracted_landmarks_preview.jpg
+uploads/
 
 # Firebase & Secrets
 firebase-credentials.json
