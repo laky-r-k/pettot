@@ -1,6 +1,8 @@
 from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
 from database import Base
+from datetime import datetime, timezone
+from sqlalchemy import DateTime, Text
 
 class User(Base):
     __tablename__ = "users"
@@ -29,6 +31,7 @@ class Pet(Base):
     owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 
     owner = relationship("User", back_populates="pets")
+    updates = relationship("StatusUpdate", back_populates="pet", cascade="all, delete-orphan")
 
 class Subscription(Base):
     __tablename__ = "subscriptions"
@@ -39,3 +42,32 @@ class Subscription(Base):
 
     owner = relationship("User", foreign_keys=[owner_id], back_populates="subscriptions_as_owner")
     doctor = relationship("User", foreign_keys=[doctor_id], back_populates="subscriptions_as_doctor")
+
+class StatusUpdate(Base):
+    __tablename__ = "status_updates"
+
+    id = Column(Integer, primary_key=True, index=True)
+    pet_id = Column(Integer, ForeignKey("pets.id"), nullable=False, index=True)
+    notes = Column(Text, nullable=False, default="")
+    created_at = Column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )
+
+    pet = relationship("Pet", back_populates="updates")
+    media = relationship(
+        "MediaFile", back_populates="status_update", cascade="all, delete-orphan"
+    )
+
+
+class MediaFile(Base):
+    __tablename__ = "media_files"
+
+    id = Column(Integer, primary_key=True, index=True)
+    status_update_id = Column(Integer, ForeignKey("status_updates.id"), nullable=False, index=True)
+    path = Column(String, nullable=False)
+    content_type = Column(String, nullable=False)
+    original_name = Column(String, nullable=True)
+
+    status_update = relationship("StatusUpdate", back_populates="media")

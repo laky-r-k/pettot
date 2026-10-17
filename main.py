@@ -5,7 +5,7 @@ import jwt
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-
+from fastapi import UploadFile, File
 from auth import hash_password, verify_password, create_access_token, SECRET_KEY, ALGORITHM
 from database import SessionLocal, engine, Base
 from models import Pet, User, Subscription
@@ -237,3 +237,103 @@ def list_my_subscriptions(doctor: User = Depends(require_role("doctor"))):
             ],
         })
     return result
+
+
+
+# file upload endpoint
+
+
+from fastapi import Form
+from models import Pet, User, Subscription, StatusUpdate, MediaFile
+from schemas import StatusUpdateResponse      # add to your existing schemas import
+from storage import save_upload, UPLOAD_DIR
+from fastapi.responses import FileResponse
+
+@app.post("/pets/{pet_id}/upload")
+def upload_pet_file(
+    pet_id: int,
+    file: UploadFile = File(...),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    pet = get_pet_for_user(pet_id, current_user, db, owner_only=True)
+    path = save_upload(file, pet.id)
+    return {"path": path, "original_name": file.filename}
+
+MAX_FILES_PER_UPDATE = 5
+
+
+@app.post("/pets/{pet_id}/updates", response_model=StatusUpdateResponse)
+def create_status_update(
+    pet_id: int,
+    notes: str = Form(""),
+    files: list[UploadFile] = File(
+    default=[],
+    json_schema_extra={"items": {"type": "string", "format": "binary"}},
+    ),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    pet = get_pet_for_user(pet_id, current_user, db, owner_only=True)
+
+    files = [f for f in (files or []) if f.filename]   # ignore empty file slots
+
+    if not notes.strip() and not files:
+        raise HTTPException(status_code=400, detail="Add notes or at least one photo/video")
+    if len(files) > MAX_FILES_PER_UPDATE:
+        raise HTTPException(status_code=400, detail=f"At most {MAX_FILES_PER_UPDATE} files per update")
+
+    saved_paths = []
+    try:
+        update = StatusUpdate(pet_id=pet.id, notes=notes.strip())
+        for f in files:
+            path = save_upload(f, pet.id)
+            saved_paths.append(path)
+            update.media.append(
+                MediaFile(path=path, content_type=f.content_type, original_name=f.filename)
+            )
+        db.add(update)
+        db.commit()
+        db.refresh(update)
+    except Exception:
+        db.rollback()
+        for p in saved_paths:                          # undo files saved before the failure
+            (UPLOAD_DIR / p).unlink(missing_ok=True)
+        raise
+
+    return update
+
+
+@app.get("/pets/{pet_id}/updates", response_model=list[StatusUpdateResponse])
+def list_status_updates(
+    pet_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    pet = get_pet_for_user(pet_id, current_user, db)   # owners and subscribed doctors
+    return (
+        db.query(StatusUpdate)
+        .filter(StatusUpdate.pet_id == pet.id)
+        .order_by(StatusUpdate.created_at.desc())
+        .all()
+    )
+
+@app.get("/media/{media_id}")
+def get_media(
+    media_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    media = db.query(MediaFile).filter(MediaFile.id == media_id).first()
+    if not media:
+        raise HTTPException(status_code=404, detail="File not found")
+
+    # same rule as viewing the pet: its owner, or a doctor the owner subscribed to
+    get_pet_for_user(media.status_update.pet_id, current_user, db)
+
+    upload_root = UPLOAD_DIR.resolve()
+    file_path = (UPLOAD_DIR / media.path).resolve()
+    if not file_path.is_relative_to(upload_root) or not file_path.is_file():
+        raise HTTPException(status_code=404, detail="File not found")
+
+    return FileResponse(file_path, media_type=media.content_type)

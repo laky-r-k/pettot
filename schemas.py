@@ -1,4 +1,5 @@
-from pydantic import BaseModel
+from pydantic import BaseModel , computed_field
+from datetime import datetime
 
 
 class PetCreate(BaseModel):
@@ -61,3 +62,27 @@ class SubscriptionResponse(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+
+class MediaFileResponse(BaseModel):
+    id: int
+    content_type: str
+    original_name: str | None = None
+
+    @computed_field
+    @property
+    def url(self) -> str:
+        return f"/media/{self.id}"
+
+    class Config:
+        from_attributes = True
+
+class StatusUpdateResponse(BaseModel):
+    id: int
+    pet_id: int
+    notes: str
+    created_at: datetime
+    media: list[MediaFileResponse]
+
+    class Config:
+        from_attributes = True

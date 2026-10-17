@@ -6,6 +6,7 @@ __pycache__/
 # C extensions
 *.so
 *.db
+*.bak
 
 # Distribution / packaging
 .Python
@@ -47,3 +48,7 @@ venv.bak/
 # Temporary outputs & sample test artifacts
 sample_pet_face.jpg
 extracted_landmarks_preview.jpg
+firebase-credentials.json
+frontend/
+project_state.md
+uploads/
