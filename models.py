@@ -1,5 +1,5 @@
 from datetime import datetime, date
-from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey, Date, DateTime
+from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey, Date, DateTime, UniqueConstraint
 from sqlalchemy.orm import relationship
 from database import Base
 
@@ -41,10 +41,14 @@ class Pet(Base):
 
 class Subscription(Base):
     __tablename__ = "subscriptions"
+    __table_args__ = (
+        UniqueConstraint("owner_id", "doctor_id", name="uq_owner_doctor"),
+    )
 
     id = Column(Integer, primary_key=True, index=True)
     owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     doctor_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
 
     owner = relationship("User", foreign_keys=[owner_id], back_populates="subscriptions_as_owner")
     doctor = relationship("User", foreign_keys=[doctor_id], back_populates="subscriptions_as_doctor")
