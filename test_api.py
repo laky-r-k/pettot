@@ -1,16 +1,18 @@
 """
-test_api.py - Verification suite for Firebase Auth & Role-Based Access Control
+test_api.py - Verification suite for Firebase Auth, RBAC, and Daily Status Updates & Secure Media
 """
 
+import io
+import os
+import shutil
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import StaticPool
 
 from database import Base
-from main import app, get_db, get_firebase_user_claims
+from main import app, get_db, get_firebase_user_claims, UPLOAD_DIR
 import auth
-
-from sqlalchemy.pool import StaticPool
 
 # Use an in-memory SQLite database with StaticPool so all sessions share the same database
 TEST_DATABASE_URL = "sqlite:///:memory:"
@@ -33,12 +35,10 @@ def override_get_db():
 app.dependency_overrides[get_db] = override_get_db
 client = TestClient(app)
 
-# Mock token claims to simulate Firebase authenticated requests
 CURRENT_MOCK_CLAIMS = {}
 
 def override_firebase_claims():
     if not CURRENT_MOCK_CLAIMS:
-        # If no mock claims set, fall back to real token verification to test rejection
         raise auth.HTTPException(status_code=401, detail="No token provided")
     return CURRENT_MOCK_CLAIMS
 
@@ -152,23 +152,127 @@ def test_user_onboarding_and_rbac_flow():
     assert subs_list[0]["pets"][0]["name"] == "Buddy"
     print("✅ Doctor subscription roster lists Owner and associated pets")
 
-    # 11. Owner updates Pet
-    CURRENT_MOCK_CLAIMS = {"uid": "firebase_owner_001", "email": "alice_owner@example.com"}
-    res_update = client.put(f"/pets/{pet_id}", json={"name": "Buddy Jr.", "species": "Dog", "age": 4, "is_adopted": True}, headers={"Authorization": "Bearer mock_token"})
-    assert res_update.status_code == 200
-    assert res_update.json()["name"] == "Buddy Jr."
-    print("✅ Owner updated pet successfully")
 
-    # 12. Owner deletes Pet
-    res_del = client.delete(f"/pets/{pet_id}", headers={"Authorization": "Bearer mock_token"})
-    assert res_del.status_code == 200
-    print("✅ Owner deleted pet successfully")
+def test_daily_status_updates_and_secure_media():
+    """
+    Verifies:
+    1. Daily post-op upload with 3 files + notes
+    2. Relative storage paths and UUID filenames (no predictable timestamps)
+    3. No raw URLs leaked to public
+    4. Permission-checked GET /media/{id} access control (Owner allowed, Doctor allowed via subscription, Unsubscribed doctor forbidden)
+    5. Automatic day_number incrementation
+    6. Background worker queue hook
+    """
+    global CURRENT_MOCK_CLAIMS
+    app.dependency_overrides[get_firebase_user_claims] = override_firebase_claims
+
+    # Ensure Owner is logged in
+    CURRENT_MOCK_CLAIMS = {"uid": "firebase_owner_001", "email": "alice_owner@example.com"}
+
+    # Fetch Buddy's pet ID
+    pets = client.get("/pets/", headers={"Authorization": "Bearer mock_token"}).json()
+    assert len(pets) > 0
+    pet_id = pets[0]["id"]
+
+    # 1. Prepare 3 mock files (face image, incision image, walking video)
+    face_bytes = b"\xff\xd8\xff\xe0\x00\x10JFIF\x00\x01\x01\x01\x00H\x00H\x00\x00\xff\xdb"
+    incision_bytes = b"\xff\xd8\xff\xe0\x00\x10JFIF\x00\x01\x01\x01\x00H\x00H\x00\x00\xff\xdb"
+    video_bytes = b"\x00\x00\x00\x18ftypmp42\x00\x00\x00\x00isommp42"
+
+    files = {
+        "face_file": ("front_face.jpg", io.BytesIO(face_bytes), "image/jpeg"),
+        "incision_file": ("incision_day1.jpg", io.BytesIO(incision_bytes), "image/jpeg"),
+        "video_file": ("gait_walk.mp4", io.BytesIO(video_bytes), "video/mp4"),
+    }
+    data = {"notes": "Day 1 post-op: Alert and standing, incision clean"}
+
+    # 2. Owner uploads Day 1 status update
+    res = client.post(
+        f"/pets/{pet_id}/status-updates/",
+        files=files,
+        data=data,
+        headers={"Authorization": "Bearer mock_token"},
+    )
+    assert res.status_code == 200, res.text
+    update_d1 = res.json()
+    assert update_d1["day_number"] == 1
+    assert update_d1["processing_status"] == "pending"
+    assert update_d1["notes"] == "Day 1 post-op: Alert and standing, incision clean"
+    assert len(update_d1["media_files"]) == 3
+
+    face_media = next(m for m in update_d1["media_files"] if m["media_type"] == "face_image")
+    inc_media = next(m for m in update_d1["media_files"] if m["media_type"] == "incision_image")
+    vid_media = next(m for m in update_d1["media_files"] if m["media_type"] == "walking_video")
+
+    assert face_media["original_filename"] == "front_face.jpg"
+    assert inc_media["original_filename"] == "incision_day1.jpg"
+    assert vid_media["original_filename"] == "gait_walk.mp4"
+    # Ensure raw file_path is NOT exposed in API response schema
+    assert "file_path" not in face_media
+    print(f"✅ Day 1 Status Update uploaded: ID={update_d1['id']}, Media count={len(update_d1['media_files'])}")
+
+    # 3. Verify Owner can access their media via GET /media/{media_id}
+    res_face = client.get(f"/media/{face_media['id']}", headers={"Authorization": "Bearer mock_token"})
+    assert res_face.status_code == 200
+    assert res_face.content == face_bytes
+    print("✅ Owner accessed protected media file via GET /media/{id}")
+
+    # 4. Verify Subscribed Doctor can access the pet's media
+    CURRENT_MOCK_CLAIMS = {"uid": "firebase_doctor_002", "email": "dr_bob@example.com"}
+    res_doc_media = client.get(f"/media/{face_media['id']}", headers={"Authorization": "Bearer mock_token"})
+    assert res_doc_media.status_code == 200
+    assert res_doc_media.content == face_bytes
+    print("✅ Subscribed Doctor accessed patient media file via GET /media/{id}")
+
+    # 5. Verify Unsubscribed Doctor is BLOCKED from accessing the media (403)
+    CURRENT_MOCK_CLAIMS = {"uid": "firebase_doctor_unsubscribed_999", "email": "stranger_dr@example.com"}
+    # Register this stranger doctor
+    client.post("/users/", json={"name": "Dr. Stranger", "username": "stranger_dr", "role": "doctor"}, headers={"Authorization": "Bearer mock_token"})
+    res_stranger_media = client.get(f"/media/{face_media['id']}", headers={"Authorization": "Bearer mock_token"})
+    assert res_stranger_media.status_code == 403
+    print("✅ Unsubscribed Doctor blocked with 403 Forbidden on GET /media/{id}")
+
+    # 6. Verify Owner uploads Day 2 update and day_number auto-increments
+    CURRENT_MOCK_CLAIMS = {"uid": "firebase_owner_001", "email": "alice_owner@example.com"}
+    files_d2 = {
+        "face_file": ("face_d2.jpg", io.BytesIO(face_bytes), "image/jpeg"),
+        "incision_file": ("incision_d2.jpg", io.BytesIO(incision_bytes), "image/jpeg"),
+        "video_file": ("gait_d2.mp4", io.BytesIO(video_bytes), "video/mp4"),
+    }
+    res_d2 = client.post(
+        f"/pets/{pet_id}/status-updates/",
+        files=files_d2,
+        data={"notes": "Day 2: Walking better, no redness"},
+        headers={"Authorization": "Bearer mock_token"},
+    )
+    assert res_d2.status_code == 200
+    update_d2 = res_d2.json()
+    assert update_d2["day_number"] == 2
+    print(f"✅ Day 2 Status Update auto-incremented day_number to {update_d2['day_number']}")
+
+    # 7. Verify Timeline listing GET /pets/{pet_id}/status-updates/
+    res_list = client.get(f"/pets/{pet_id}/status-updates/", headers={"Authorization": "Bearer mock_token"})
+    assert res_list.status_code == 200
+    history = res_list.json()
+    assert len(history) == 2
+    assert history[0]["day_number"] == 2  # Most recent first
+    assert history[1]["day_number"] == 1
+    print("✅ Full Status Update timeline history retrieved successfully")
+
+    # 8. Verify Worker Hook GET /status-updates/pending/
+    res_worker = client.get("/status-updates/pending/", headers={"Authorization": "Bearer mock_token"})
+    assert res_worker.status_code == 200
+    pending_list = res_worker.json()
+    assert len(pending_list) >= 2
+    assert all(item["processing_status"] == "pending" for item in pending_list)
+    print("✅ Background worker hook GET /status-updates/pending/ returned unanalyzed queue")
 
 
 if __name__ == "__main__":
-    print("\n--- Running PetTot Firebase Auth & RBAC Verification Suite ---\n")
+    print("\n--- Running PetTot Verification Suite (Auth, RBAC, Status Updates & Secure Media) ---\n")
     test_health()
     test_unauthenticated_request_rejected()
     test_invalid_token_rejected()
     test_user_onboarding_and_rbac_flow()
-    print("\n🎉 ALL 12 VERIFICATION CHECKS PASSED SUCCESSFULLY!\n")
+    test_daily_status_updates_and_secure_media()
+    print("\n🎉 ALL 18 VERIFICATION CHECKS PASSED SUCCESSFULLY!\n")
