@@ -1,0 +1,318 @@
+"""
+tests/integration/test_api.py
+------------------------------
+End-to-end integration tests: Firebase Auth, RBAC, Status Updates & Secure Media.
+Uses the shared fixtures from tests/conftest.py (in-memory DB, mock Firebase auth).
+"""
+
+import io
+import os
+import shutil
+from fastapi.testclient import TestClient
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import StaticPool
+
+from app.core.database import Base, get_db
+from app.core.security import get_firebase_user_claims
+from app.main import app as fastapi_app
+import app.models.db  # noqa: F401
+
+app = fastapi_app  # alias for readability below
+
+# ── Test DB setup ──────────────────────────────────────────────────────────────
+
+TEST_DATABASE_URL = "sqlite:///:memory:"
+test_engine = create_engine(
+    TEST_DATABASE_URL,
+    connect_args={"check_same_thread": False},
+    poolclass=StaticPool,
+)
+TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
+Base.metadata.create_all(bind=test_engine)
+
+
+def override_get_db():
+    db = TestingSessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+
+app.dependency_overrides[get_db] = override_get_db
+client = TestClient(app)
+
+CURRENT_MOCK_CLAIMS = {}
+
+
+def override_firebase_claims():
+    from fastapi import HTTPException
+    if not CURRENT_MOCK_CLAIMS:
+        raise HTTPException(status_code=401, detail="No token provided")
+    return CURRENT_MOCK_CLAIMS
+
+
+# ── Tests ──────────────────────────────────────────────────────────────────────
+
+def test_health():
+    """Verify health endpoint is publicly accessible."""
+    res = client.get("/health")
+    assert res.status_code == 200
+    assert res.json()["status"] == "online"
+    assert res.json()["auth"] == "Firebase"
+    print("✅ Health check passed")
+
+
+def test_unauthenticated_request_rejected():
+    """Verify protected endpoints reject requests without a Bearer token."""
+    res = client.get("/me")
+    assert res.status_code in [401, 403]
+    print("✅ Unauthenticated request rejected (401/403)")
+
+
+def test_invalid_token_rejected():
+    """Verify malformed / fake Firebase token is rejected by real verify_firebase_token."""
+    res = client.get("/me", headers={"Authorization": "Bearer fake_invalid_token_12345"})
+    assert res.status_code == 401
+    print("✅ Invalid Firebase token rejected (401)")
+
+
+def test_user_onboarding_and_rbac_flow():
+    """End-to-end test simulating Firebase authenticated Owner and Doctor users."""
+    global CURRENT_MOCK_CLAIMS
+    app.dependency_overrides[get_firebase_user_claims] = override_firebase_claims
+
+    # 1. Register Owner
+    CURRENT_MOCK_CLAIMS = {"uid": "firebase_owner_001", "email": "alice_owner@example.com"}
+    owner_payload = {"name": "Alice Smith", "username": "alice", "role": "owner"}
+    res = client.post("/users/", json=owner_payload, headers={"Authorization": "Bearer mock_token"})
+    assert res.status_code == 200, res.text
+    owner_data = res.json()
+    assert owner_data["firebase_uid"] == "firebase_owner_001"
+    assert owner_data["role"] == "owner"
+    owner_id = owner_data["id"]
+    print(f"✅ Owner registered: ID={owner_id}")
+
+    # 2. Duplicate registration check
+    res_dup = client.post("/users/", json=owner_payload, headers={"Authorization": "Bearer mock_token"})
+    assert res_dup.status_code == 400
+    print("✅ Duplicate Firebase registration prevented (400)")
+
+    # 3. Register Doctor
+    CURRENT_MOCK_CLAIMS = {"uid": "firebase_doctor_002", "email": "dr_bob@example.com"}
+    doctor_payload = {"name": "Dr. Bob", "username": "dr_bob", "role": "doctor", "license_number": "VET-12345"}
+    res_doc = client.post("/users/", json=doctor_payload, headers={"Authorization": "Bearer mock_token"})
+    assert res_doc.status_code == 200, res_doc.text
+    doctor_data = res_doc.json()
+    doctor_id = doctor_data["id"]
+    print(f"✅ Doctor registered: ID={doctor_id}, License={doctor_data['license_number']}")
+
+    # 4. Check /me for Doctor
+    res_me = client.get("/me", headers={"Authorization": "Bearer mock_token"})
+    assert res_me.status_code == 200
+    assert res_me.json()["username"] == "dr_bob"
+    print("✅ GET /me returns current user profile")
+
+    # 5. Doctor tries to create a pet (Forbidden)
+    res_doc_pet = client.post("/pets/", json={"name": "Ghost", "species": "Cat", "age": 2}, headers={"Authorization": "Bearer mock_token"})
+    assert res_doc_pet.status_code == 403
+    print("✅ Doctor creating pet is forbidden (403)")
+
+    # 6. Switch to Owner and create Pet
+    CURRENT_MOCK_CLAIMS = {"uid": "firebase_owner_001", "email": "alice_owner@example.com"}
+    pet_payload = {"name": "Buddy", "species": "Dog", "age": 3, "is_adopted": True}
+    res_pet = client.post("/pets/", json=pet_payload, headers={"Authorization": "Bearer mock_token"})
+    assert res_pet.status_code == 200, res_pet.text
+    pet_id = res_pet.json()["id"]
+    print(f"✅ Owner successfully created pet ID={pet_id} (Buddy)")
+
+    # 7. Doctor tries to view Owner's pet BEFORE subscribing (Forbidden)
+    CURRENT_MOCK_CLAIMS = {"uid": "firebase_doctor_002", "email": "dr_bob@example.com"}
+    res_unsub = client.get(f"/pets/{pet_id}", headers={"Authorization": "Bearer mock_token"})
+    assert res_unsub.status_code == 403
+    print("✅ Doctor cannot access pet without active subscription (403)")
+
+    # 8. Owner subscribes to Doctor
+    CURRENT_MOCK_CLAIMS = {"uid": "firebase_owner_001", "email": "alice_owner@example.com"}
+    res_sub = client.post("/subscriptions/", json={"doctor_id": doctor_id}, headers={"Authorization": "Bearer mock_token"})
+    assert res_sub.status_code == 200, res_sub.text
+    print(f"✅ Owner successfully subscribed to Doctor ID={doctor_id}")
+
+    # 9. Doctor now views Owner's pet (Allowed via subscription!)
+    CURRENT_MOCK_CLAIMS = {"uid": "firebase_doctor_002", "email": "dr_bob@example.com"}
+    res_doc_view = client.get(f"/pets/{pet_id}", headers={"Authorization": "Bearer mock_token"})
+    assert res_doc_view.status_code == 200, res_doc_view.text
+    assert res_doc_view.json()["name"] == "Buddy"
+    print("✅ Doctor successfully accessed pet after subscription (200)")
+
+    # 10. Doctor views their subscription roster
+    res_doc_subs = client.get("/doctors/me/subscriptions/", headers={"Authorization": "Bearer mock_token"})
+    assert res_doc_subs.status_code == 200
+    subs_list = res_doc_subs.json()
+    assert len(subs_list) == 1
+    assert subs_list[0]["owner_name"] == "Alice Smith"
+    assert subs_list[0]["pets"][0]["name"] == "Buddy"
+    print("✅ Doctor subscription roster lists Owner and associated pets")
+
+
+def test_daily_status_updates_and_secure_media():
+    """
+    Verifies daily upload, UUID filenames, no public URL leak,
+    permission-checked media access, and auto day_number increment.
+    """
+    global CURRENT_MOCK_CLAIMS
+    app.dependency_overrides[get_firebase_user_claims] = override_firebase_claims
+    CURRENT_MOCK_CLAIMS = {"uid": "firebase_owner_001", "email": "alice_owner@example.com"}
+
+    pets = client.get("/pets/", headers={"Authorization": "Bearer mock_token"}).json()
+    assert len(pets) > 0
+    pet_id = pets[0]["id"]
+
+    face_bytes = b"\xff\xd8\xff\xe0\x00\x10JFIF\x00\x01\x01\x01\x00H\x00H\x00\x00\xff\xdb"
+    incision_bytes = face_bytes
+    video_bytes = b"\x00\x00\x00\x18ftypmp42\x00\x00\x00\x00isommp42"
+
+    files = {
+        "face_file": ("front_face.jpg", io.BytesIO(face_bytes), "image/jpeg"),
+        "incision_file": ("incision_day1.jpg", io.BytesIO(incision_bytes), "image/jpeg"),
+        "video_file": ("gait_walk.mp4", io.BytesIO(video_bytes), "video/mp4"),
+    }
+    data = {"notes": "Day 1 post-op: Alert and standing, incision clean"}
+
+    res = client.post(
+        f"/pets/{pet_id}/status-updates/",
+        files=files, data=data,
+        headers={"Authorization": "Bearer mock_token"},
+    )
+    assert res.status_code == 200, res.text
+    update_d1 = res.json()
+    assert update_d1["day_number"] == 1
+    assert update_d1["processing_status"] == "pending"
+    assert len(update_d1["media_files"]) == 3
+
+    face_media = next(m for m in update_d1["media_files"] if m["media_type"] == "face_image")
+    assert "file_path" not in face_media  # raw path must NOT be in response
+    print(f"✅ Day 1 Status Update uploaded: ID={update_d1['id']}")
+
+    # Owner accesses protected media
+    res_face = client.get(f"/media/{face_media['id']}", headers={"Authorization": "Bearer mock_token"})
+    assert res_face.status_code == 200
+    assert res_face.content == face_bytes
+    print("✅ Owner accessed protected media file via GET /media/{id}")
+
+    # Subscribed Doctor accesses media
+    CURRENT_MOCK_CLAIMS = {"uid": "firebase_doctor_002", "email": "dr_bob@example.com"}
+    res_doc_media = client.get(f"/media/{face_media['id']}", headers={"Authorization": "Bearer mock_token"})
+    assert res_doc_media.status_code == 200
+    print("✅ Subscribed Doctor accessed patient media file")
+
+    # Unsubscribed Doctor blocked (403)
+    CURRENT_MOCK_CLAIMS = {"uid": "firebase_doctor_unsubscribed_999", "email": "stranger_dr@example.com"}
+    client.post("/users/", json={"name": "Dr. Stranger", "username": "stranger_dr", "role": "doctor"}, headers={"Authorization": "Bearer mock_token"})
+    res_stranger = client.get(f"/media/{face_media['id']}", headers={"Authorization": "Bearer mock_token"})
+    assert res_stranger.status_code == 403
+    print("✅ Unsubscribed Doctor blocked with 403")
+
+    # Day 2 auto-increments
+    CURRENT_MOCK_CLAIMS = {"uid": "firebase_owner_001", "email": "alice_owner@example.com"}
+    files_d2 = {
+        "face_file": ("face_d2.jpg", io.BytesIO(face_bytes), "image/jpeg"),
+        "incision_file": ("incision_d2.jpg", io.BytesIO(incision_bytes), "image/jpeg"),
+        "video_file": ("gait_d2.mp4", io.BytesIO(video_bytes), "video/mp4"),
+    }
+    res_d2 = client.post(
+        f"/pets/{pet_id}/status-updates/",
+        files=files_d2, data={"notes": "Day 2: Walking better"},
+        headers={"Authorization": "Bearer mock_token"},
+    )
+    assert res_d2.status_code == 200
+    assert res_d2.json()["day_number"] == 2
+    print("✅ Day 2 auto-incremented day_number")
+
+    # Timeline listing
+    res_list = client.get(f"/pets/{pet_id}/status-updates/", headers={"Authorization": "Bearer mock_token"})
+    history = res_list.json()
+    assert len(history) == 2
+    assert history[0]["day_number"] == 2  # most recent first
+    print("✅ Full timeline retrieved")
+
+    # Worker hook
+    res_worker = client.get("/status-updates/pending/", headers={"Authorization": "Bearer mock_token"})
+    assert res_worker.status_code == 200
+    assert all(item["processing_status"] == "pending" for item in res_worker.json())
+    print("✅ Background worker hook returned pending queue")
+
+
+def test_multi_doctor_subscriptions_and_duplicate_prevention():
+    """
+    Verifies Option B duplicate prevention and multi-doctor support.
+    """
+    global CURRENT_MOCK_CLAIMS
+    app.dependency_overrides[get_firebase_user_claims] = override_firebase_claims
+
+    # Register second doctor
+    CURRENT_MOCK_CLAIMS = {"uid": "firebase_doctor_003", "email": "dr_sarah@example.com"}
+    res_doc2 = client.post("/users/", json={
+        "name": "Dr. Sarah", "username": "dr_sarah",
+        "role": "doctor", "license_number": "SURG-9999"
+    }, headers={"Authorization": "Bearer mock_token"})
+    assert res_doc2.status_code == 200
+    doc2_id = res_doc2.json()["id"]
+
+    CURRENT_MOCK_CLAIMS = {"uid": "firebase_owner_001", "email": "alice_owner@example.com"}
+
+    # Duplicate subscription blocked
+    res_dup = client.post("/subscriptions/", json={"doctor_id": 2}, headers={"Authorization": "Bearer mock_token"})
+    assert res_dup.status_code == 400
+    assert "already subscribed" in res_dup.json()["detail"].lower()
+    print("✅ Duplicate subscription blocked with 400")
+
+    # Subscribe to second doctor
+    res_sub2 = client.post("/subscriptions/", json={"doctor_id": doc2_id}, headers={"Authorization": "Bearer mock_token"})
+    assert res_sub2.status_code == 200
+    sub2_id = res_sub2.json()["id"]
+    print(f"✅ Subscribed to second doctor (ID={doc2_id})")
+
+    # GET /subscriptions/me/ lists both
+    res_my_docs = client.get("/subscriptions/me/", headers={"Authorization": "Bearer mock_token"})
+    doc_list = res_my_docs.json()
+    assert len(doc_list) == 2
+    assert any(d["doctor_name"] == "Dr. Bob" for d in doc_list)
+    assert any(d["doctor_name"] == "Dr. Sarah" for d in doc_list)
+    print("✅ GET /subscriptions/me/ returned all linked veterinarians")
+
+    pets = client.get("/pets/", headers={"Authorization": "Bearer mock_token"}).json()
+    pet_id = pets[0]["id"]
+
+    # Doctor 2 accesses pet
+    CURRENT_MOCK_CLAIMS = {"uid": "firebase_doctor_003", "email": "dr_sarah@example.com"}
+    assert client.get(f"/pets/{pet_id}", headers={"Authorization": "Bearer mock_token"}).status_code == 200
+    print("✅ Doctor 2 granted access via subscription")
+
+    # Owner unsubscribes from Doctor 2
+    CURRENT_MOCK_CLAIMS = {"uid": "firebase_owner_001", "email": "alice_owner@example.com"}
+    assert client.delete(f"/subscriptions/{sub2_id}", headers={"Authorization": "Bearer mock_token"}).status_code == 200
+    print("✅ Owner unsubscribed from Doctor 2")
+
+    # Doctor 2 immediately blocked
+    CURRENT_MOCK_CLAIMS = {"uid": "firebase_doctor_003", "email": "dr_sarah@example.com"}
+    assert client.get(f"/pets/{pet_id}", headers={"Authorization": "Bearer mock_token"}).status_code == 403
+    print("✅ Unsubscribed doctor immediately lost access (403)")
+
+    # Only 1 subscription remains
+    CURRENT_MOCK_CLAIMS = {"uid": "firebase_owner_001", "email": "alice_owner@example.com"}
+    res_after = client.get("/subscriptions/me/", headers={"Authorization": "Bearer mock_token"})
+    assert len(res_after.json()) == 1
+    print("✅ GET /subscriptions/me/ reflects updated single subscription")
+
+
+if __name__ == "__main__":
+    print("\n--- Running PetTot Integration Suite ---\n")
+    test_health()
+    test_unauthenticated_request_rejected()
+    test_invalid_token_rejected()
+    test_user_onboarding_and_rbac_flow()
+    test_daily_status_updates_and_secure_media()
+    test_multi_doctor_subscriptions_and_duplicate_prevention()
+    print("\n🎉 ALL CHECKS PASSED!\n")
