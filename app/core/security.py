@@ -4,6 +4,7 @@ app/core/security.py
 Firebase token verification and FastAPI auth dependencies.
 Moved from root auth.py — all auth logic lives here.
 """
+import json
 import firebase_admin
 from firebase_admin import auth as fb_auth, credentials
 from fastapi import Depends, HTTPException, status
@@ -16,8 +17,18 @@ from app.core.database import get_db
 
 # Initialize Firebase Admin app singleton (safe to call multiple times)
 if not firebase_admin._apps:
-    cred = credentials.Certificate(settings.FIREBASE_CREDENTIALS_PATH)
-    firebase_admin.initialize_app(cred)
+    if settings.FIREBASE_CREDENTIALS_JSON:
+        # Load from environment variable (JSON string) for cloud hosting like Render
+        try:
+            cert_dict = json.loads(settings.FIREBASE_CREDENTIALS_JSON)
+            cred = credentials.Certificate(cert_dict)
+            firebase_admin.initialize_app(cred)
+        except Exception as e:
+            raise RuntimeError(f"Failed to parse FIREBASE_CREDENTIALS_JSON: {e}")
+    elif settings.FIREBASE_CREDENTIALS_PATH:
+        # Fallback to local file path
+        cred = credentials.Certificate(settings.FIREBASE_CREDENTIALS_PATH)
+        firebase_admin.initialize_app(cred)
 
 bearer_scheme = HTTPBearer()
 

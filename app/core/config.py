@@ -22,5 +22,13 @@ class Settings:
     # File storage
     UPLOAD_DIR: str = os.getenv("UPLOAD_DIR", "./uploads")
 
+    # Supabase (Optional in local dev, used in production for Postgres & Storage)
+    SUPABASE_URL: str = os.getenv("SUPABASE_URL", "")
+    SUPABASE_KEY: str = os.getenv("SUPABASE_KEY", "")
+    SUPABASE_BUCKET: str = os.getenv("SUPABASE_BUCKET", "media")
+
+    # Firebase raw credentials JSON string (for cloud hosting without file mounts)
+    FIREBASE_CREDENTIALS_JSON: str = os.getenv("FIREBASE_CREDENTIALS_JSON", "")
+
 
 settings = Settings()

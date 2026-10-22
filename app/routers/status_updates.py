@@ -16,7 +16,7 @@ from app.core.database import get_db
 from app.core.security import get_current_user
 from app.models.db import MediaFile, StatusUpdate, User
 from app.schemas.api import StatusUpdateResponse
-from app.services.media_service import save_upload_file, resolve_abs_path
+from app.services.media_service import save_upload_file, resolve_abs_path, delete_stored_file, is_cloud_storage_enabled, get_signed_media_url
 from app.services.pet_service import get_pet_for_user
 
 router = APIRouter(tags=["Status Updates"])
@@ -61,10 +61,19 @@ def create_status_update(
     vid_rel_path, vid_mime, vid_size = save_upload_file(video_file, pet_id)
 
     # 4. Check video duration via OpenCV
-    abs_vid_path = resolve_abs_path(vid_rel_path)
     duration = 0.0
+    video_source = None
+
+    if is_cloud_storage_enabled():
+        # Stream from signed URL in cloud mode
+        video_source = get_signed_media_url(vid_rel_path, expiry_seconds=300)
+    
+    if not video_source:
+        # Local file path
+        video_source = resolve_abs_path(vid_rel_path)
+
     try:
-        cap = cv2.VideoCapture(abs_vid_path)
+        cap = cv2.VideoCapture(video_source)
         fps = cap.get(cv2.CAP_PROP_FPS)
         frame_count = cap.get(cv2.CAP_PROP_FRAME_COUNT)
         if fps > 0:
@@ -76,9 +85,7 @@ def create_status_update(
     # Allow slight buffer for codec metadata overhead (up to 10.5 seconds)
     if duration > 10.5:
         for p in [face_rel_path, inc_rel_path, vid_rel_path]:
-            abs_p = resolve_abs_path(p)
-            if os.path.exists(abs_p):
-                os.remove(abs_p)
+            delete_stored_file(p)
         raise HTTPException(
             status_code=400,
             detail=f"Walking video exceeds 10-second limit ({duration}s detected). Maximum duration is 10.0 seconds.",
