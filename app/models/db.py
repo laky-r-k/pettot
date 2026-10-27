@@ -1,7 +1,16 @@
+"""
+app/models/db.py
+----------------
+SQLAlchemy ORM models. Single source of truth for the DB schema.
+"""
 from datetime import datetime, date
-from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey, Date, DateTime, UniqueConstraint
+from sqlalchemy import (
+    Column, Integer, String, Float, Boolean,
+    ForeignKey, Date, DateTime, UniqueConstraint,
+)
 from sqlalchemy.orm import relationship
-from database import Base
+
+from app.core.database import Base
 
 
 class User(Base):
@@ -16,8 +25,12 @@ class User(Base):
     license_number = Column(String, nullable=True)
 
     pets = relationship("Pet", back_populates="owner")
-    subscriptions_as_owner = relationship("Subscription", foreign_keys="Subscription.owner_id", back_populates="owner")
-    subscriptions_as_doctor = relationship("Subscription", foreign_keys="Subscription.doctor_id", back_populates="doctor")
+    subscriptions_as_owner = relationship(
+        "Subscription", foreign_keys="Subscription.owner_id", back_populates="owner"
+    )
+    subscriptions_as_doctor = relationship(
+        "Subscription", foreign_keys="Subscription.doctor_id", back_populates="doctor"
+    )
 
 
 class Pet(Base):
@@ -32,10 +45,10 @@ class Pet(Base):
 
     owner = relationship("User", back_populates="pets")
     status_updates = relationship(
-        "StatusUpdate", 
-        back_populates="pet", 
-        cascade="all, delete-orphan", 
-        order_by="StatusUpdate.created_at.desc()"
+        "StatusUpdate",
+        back_populates="pet",
+        cascade="all, delete-orphan",
+        order_by="StatusUpdate.created_at.desc()",
     )
 
 
@@ -62,20 +75,21 @@ class StatusUpdate(Base):
     day_number = Column(Integer, nullable=False, default=1)
     update_date = Column(Date, nullable=False, default=date.today)
     notes = Column(String, nullable=True)
-    
-    # State flag for future background processing jobs
-    processing_status = Column(String, default="pending", index=True)  # pending | processing | completed | failed
+
+    # State flag for background processing jobs
+    processing_status = Column(
+        String, default="pending", index=True
+    )  # pending | processing | completed | failed
     analysis_results = Column(String, nullable=True)  # Nullable JSON string for future AI findings
-    
+
     created_at = Column(DateTime, default=datetime.utcnow)
 
-    # Relationships
     pet = relationship("Pet", back_populates="status_updates")
     media_files = relationship(
-        "MediaFile", 
-        back_populates="status_update", 
+        "MediaFile",
+        back_populates="status_update",
         cascade="all, delete-orphan",
-        order_by="MediaFile.id.asc()"
+        order_by="MediaFile.id.asc()",
     )
 
 
@@ -83,15 +97,17 @@ class MediaFile(Base):
     __tablename__ = "media_files"
 
     id = Column(Integer, primary_key=True, index=True)
-    status_update_id = Column(Integer, ForeignKey("status_updates.id"), nullable=False, index=True)
-    
-    media_type = Column(String, nullable=False)        # "face_image" | "incision_image" | "walking_video"
-    file_path = Column(String, nullable=False)         # Relative storage path: "pets/{pet_id}/{uuid}.ext"
-    original_filename = Column(String, nullable=False) # e.g. "front_face.jpg"
-    content_type = Column(String, nullable=False)      # e.g. "image/jpeg", "video/mp4"
+    status_update_id = Column(
+        Integer, ForeignKey("status_updates.id"), nullable=False, index=True
+    )
+
+    media_type = Column(String, nullable=False)         # "face_image" | "incision_image" | "walking_video"
+    file_path = Column(String, nullable=False)          # Relative path: "pets/{pet_id}/{uuid}.ext"
+    original_filename = Column(String, nullable=False)  # e.g. "front_face.jpg"
+    content_type = Column(String, nullable=False)       # e.g. "image/jpeg", "video/mp4"
     file_size_bytes = Column(Integer, nullable=True)
-    duration_seconds = Column(Float, nullable=True)    # Video duration (validated <= 10.0s)
-    
+    duration_seconds = Column(Float, nullable=True)     # Video duration (validated <= 10.0s)
+
     created_at = Column(DateTime, default=datetime.utcnow)
 
     status_update = relationship("StatusUpdate", back_populates="media_files")

@@ -1,7 +1,15 @@
+"""
+app/schemas/api.py
+------------------
+Pydantic request/response schemas.
+These define the API contract — what comes in and what goes out.
+"""
 from datetime import datetime, date
 from typing import Literal, Optional
 from pydantic import BaseModel
 
+
+# ── Pets ──────────────────────────────────────────────────────────────────────
 
 class PetCreate(BaseModel):
     name: str
@@ -21,6 +29,8 @@ class PetResponse(BaseModel):
     class Config:
         from_attributes = True
 
+
+# ── Users ─────────────────────────────────────────────────────────────────────
 
 class UserCreate(BaseModel):
     name: str
@@ -42,6 +52,8 @@ class UserResponse(BaseModel):
     class Config:
         from_attributes = True
 
+
+# ── Subscriptions ─────────────────────────────────────────────────────────────
 
 class SubscriptionCreate(BaseModel):
     doctor_id: int
@@ -69,6 +81,8 @@ class OwnerDoctorSubscriptionResponse(BaseModel):
     class Config:
         from_attributes = True
 
+
+# ── Media & Status Updates ────────────────────────────────────────────────────
 
 class MediaFileResponse(BaseModel):
     id: int
